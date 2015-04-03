@@ -49,18 +49,23 @@ end
 
 function preprocess_data(raw_data, wordvector_table, opt)
 
-   -- wordvector_table=glove_table
+   --wordvector_table=glove_table
 
     -- opt.max_length is going to be the maximum length of a document.
     -- OPEN ISSUE: we can either zero pad if the document is too short,
     -- or do like Collbert et al and plug a repeating code word "END".
+    -- THE CURRENT implementation is zeros.
 
-    local data = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length, 1)
+    local data = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length,opt.inputDim)
     local labels = torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
     
     -- use torch.randperm to shuffle the data, since it's ordered by class in the file
     local order = torch.randperm(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs))
 
+    --i=1
+    --j=1
+    
+    
     for i=1,opt.nClasses do
         for j=1,opt.nTrainDocs+opt.nTestDocs do
             local k = order[(i-1)*(opt.nTrainDocs+opt.nTestDocs) + j]
@@ -77,8 +82,10 @@ function preprocess_data(raw_data, wordvector_table, opt)
 		    if (doc_size<opt.max_length) then 
 		        --print(#document)
 		        local embedding=wordvector_table[word:gsub("%p+", "")]
-		        data[k][{{doc_size,(doc_size+opt.inputDim-1)}}]:add(embedding)
-                        doc_size = doc_size + opt.inputDim
+			
+		        data[k][{{doc_size,{}}}]:add(embedding)
+                        
+			doc_size = doc_size+1
 		    end
                 end
             end
@@ -86,7 +93,7 @@ function preprocess_data(raw_data, wordvector_table, opt)
             labels[k] = i
         end
     end
-
+    --data=data:reshape(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length)
     return data, labels
 end
 
@@ -136,6 +143,7 @@ function test_model(model, data, labels, opt)
 end
 
 
+--function main()
     -- Configuration parameters
     opt = {}
     -- change these to the appropriate data locations
@@ -147,9 +155,10 @@ end
     -- here we take the first nTrainDocs documents from each class as training samples
     -- and use the rest as a validation set.
 
-    opt.max_length=1500
+    -- The Maximal length of a doc, in words
+    opt.max_length=30
 
-    opt.nTrainDocs = 1000
+    opt.nTrainDocs = 5
     opt.nTestDocs = 0
     opt.nClasses = 5
     -- SGD parameters - play around with these
@@ -173,6 +182,11 @@ end
     print("Computing document input representations...")
     processed_data, labels = preprocess_data(raw_data, glove_table, opt)
 
+model = nn.Sequential()
+model:add(nn.TemporalConvolution(50, 1, 3, 1))
+output=model:forward(processed_data)
+--#output: 25x28x1
+
 
 function main()
     
@@ -188,7 +202,7 @@ function main()
     model = nn.Sequential()
    
     -- if you decide to just adapt the baseline code for part 2, you'll probably want to make this linear and remove pooling
-    model:add(nn.TemporalConvolution(1, 20, 10, 1))
+    model:add(nn.TemporalConvolution(50, 1, 3, 1))
     
     --------------------------------------------------------------------------------------
     -- Replace this temporal max-pooling module with your log-exponential pooling module:
