@@ -189,7 +189,11 @@ end
     print("Computing document input representations...")
     processed_data, labels = preprocess_data(raw_data, glove_table, opt)
 
-    
+    tr_data={}
+	tr_data.x=processed_data
+	tr_data.y=labels
+	
+	torch.save('data/proc_tr.t7b',tr_data)
     
 
 
