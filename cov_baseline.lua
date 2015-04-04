@@ -165,7 +165,7 @@ end
     -- The Maximal length of a doc, in words
     opt.max_length=30
 
-    opt.nTrainDocs = 5
+    opt.nTrainDocs = 130000
     opt.nTestDocs = 0
     opt.nClasses = 5
     -- SGD parameters - play around with these
@@ -189,10 +189,8 @@ end
     print("Computing document input representations...")
     processed_data, labels = preprocess_data(raw_data, glove_table, opt)
 
-model = nn.Sequential()
-model:add(nn.TemporalConvolution(50, 1, 3, 1))
-output=model:forward(processed_data)
---#output: 25x28x1
+    
+    
 
 
 function main()
@@ -209,7 +207,7 @@ function main()
     model = nn.Sequential()
    
     -- if you decide to just adapt the baseline code for part 2, you'll probably want to make this linear and remove pooling
-    model:add(nn.TemporalConvolution(50, 1, 3, 1))
+    model:add(nn.TemporalConvolution(50, 10, 3, 1))
     
     --------------------------------------------------------------------------------------
     -- Replace this temporal max-pooling module with your log-exponential pooling module:
