@@ -8,10 +8,13 @@ ffi = require('ffi')
 -- glove_table['word'] = vector
 function load_glove(path, inputDim)
     --EZ: what is inputDim?
+    --MW: the dimension of the word vectors
     local glove_file = io.open(path)
     local glove_table = {}
 
-    local line = glove_file:read("*l") --EZ:what is read?
+    local line = glove_file:read("*l") 
+    --EZ: what is read? 
+    --MW: read one line (until newline character)
     while line do
         -- read the GloVe text file one line at a time, break at EOF
         local i = 1
@@ -22,14 +25,21 @@ function load_glove(path, inputDim)
                 word = entry:gsub("%p+", ""):lower() -- remove all punctuation and change to lower case
                 if string.len(word) > 0 then
                     glove_table[word] = torch.zeros(inputDim, 1) -- padded with an extra dimension for convolution
-			--EZ: but how does glove_table[word] make sense?
+                    --EZ: but how does glove_table[word] make sense?
+                    --MW: you are creating a lookup dictionary, word --> word_vector_embedding
                 else
-                    break --EZ: why a break?
+                    break 
+                    --EZ: why a break? 
+                    --MW: I guess if there's an empty line just skip it
                 end
+
             else
                 -- read off and store each word vector element
-                glove_table[word][i-1] = tonumber(entry) --EZ: where is the
-			--word and where is the vector??
+                glove_table[word][i-1] = tonumber(entry) 
+                --EZ: where is the word and where is the vector??
+                --MW: the word is read first when i==1 and does not change till you go to the next line
+                --    which is outside of the for loop and i gets reset to 1. the vector is read one element
+                --    at a time and placed into the vector
             end
             i = i+1
         end
@@ -79,17 +89,14 @@ function preprocess_data(raw_data, wordvector_table, opt)
             -- break each review into words and compute the document average
             for word in document:gmatch("%S+") do
                 if wordvector_table[word:gsub("%p+", "")] then
-		    if (doc_size<opt.max_length) then 
-		        --print(#document)
-		        local embedding=wordvector_table[word:gsub("%p+", "")]
-			
-		        data[k][{{doc_size,{}}}]:add(embedding)
-                        
-			doc_size = doc_size+1
-		    end
+                    if (doc_size<opt.max_length) then 
+                        --print(#document)
+                        local embedding=wordvector_table[word:gsub("%p+", "")]
+                        data[k][{{doc_size,{}}}]:add(embedding)
+                        doc_size = doc_size+1
+                    end
                 end
             end
-
             labels[k] = i
         end
     end
