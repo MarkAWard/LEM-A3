@@ -165,7 +165,11 @@ end
     -- The Maximal length of a doc, in words
     opt.max_length=30
 
-    opt.nTrainDocs = 130000
+    --opt.nTrainDocs = 130000
+	
+	--small
+	opt.nTrainDocs = 256
+	
     opt.nTestDocs = 0
     opt.nClasses = 5
     -- SGD parameters - play around with these
@@ -193,8 +197,10 @@ end
 	tr_data.x=processed_data
 	tr_data.y=labels
 	
-	torch.save('data/proc_tr.t7b',tr_data)
+	--torch.save('data/proc_tr.t7b',tr_data)
     
+	--small set for testing
+	torch.save('data/small.t7b',tr_data)
 
 
 function main()
