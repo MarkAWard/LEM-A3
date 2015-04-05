@@ -1,4 +1,4 @@
-F=require 'kfold'
+F=require 'folder'
 require 'functions_processing_training'
 require '0_K80_options'
 
@@ -17,7 +17,7 @@ require '0_K80_options'
 	print('==> calling folder')
 	--[[folds is going to be a k column matrix, where each column
 	contains the index of validation observations.--]]
-	tr_data.folds=F.KFold((#tr_data.x)[1],opt.valFold)
+	tr_data.folds=F.KFold((#tr_data.x)[1],opt.valFold):long()
 
 
 	--medium set for testing

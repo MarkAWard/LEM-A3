@@ -25,11 +25,13 @@ VL={}
 
 	k=1
 	print('==> populating fold',k)
-	VL.x=all_tr_data.x:index(1,all_tr_data.folds[k])
-	VL.y=all_tr_data.y:index(1,all_tr_data.folds[k])
+	VL.x=all_tr_data.x:index(1,all_tr_data.folds[{{},k}])
+	VL.y=all_tr_data.y:index(1,all_tr_data.folds[{{},k}])
 
-	pointers=torch.ones(#folds)
+	pointers=torch.ones(#all_tr_data.folds)
 	pointers:indexFill(2,torch.LongTensor({k}),0)
+		
+	
 	tr_pointers=folds:maskedSelect(pointers:byte()):long()
 
 	TR.x=all_tr_data.x:index(1,tr_pointers)
@@ -40,3 +42,10 @@ VL={}
 
 	
 --]]
+
+
+all_tr_data.folds
+torch.Tensor(all_tr_data.folds)
+
+
+
