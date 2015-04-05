@@ -12,12 +12,10 @@
     opt.max_length=30
 
     
-	--opt.dataPath = "data/train.t7b"
-	--opt.dataPath = "data/proc_tr.t7b"
-	--opt.dataPath = "data/small.t7b"
-	opt.dataPath = "data/medium.t7b"
-	
+	opt.dataPath = "data/train.t7b"	
 
+	opt.bufferPath = "data/medium.t7b"
+	
 	--full
     --opt.nTrainDocs = 130000	
 	--small
