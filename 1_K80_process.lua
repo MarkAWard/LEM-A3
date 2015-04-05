@@ -7,8 +7,7 @@ ffi = require('ffi')
 --- Parses and loads the GloVe word vectors into a hash table:
 -- glove_table['word'] = vector
 function load_glove(path, inputDim)
-    --EZ: what is inputDim?
-    --MW: the dimension of the word vectors
+
     local glove_file = io.open(path)
     local glove_table = {}
 
@@ -106,6 +105,7 @@ end
 
 function train_model(model, criterion, data, labels, test_data, test_labels, opt)
 
+	print('==> train')
     parameters, grad_parameters = model:getParameters()
     
     -- optimization functional to train the model with torch's optim library
@@ -150,40 +150,9 @@ function test_model(model, data, labels, opt)
 end
 
 
---function main()
-    -- Configuration parameters
-    opt = {}
-    -- change these to the appropriate data locations
-    opt.glovePath = "glove/glove.6B.50d.txt" -- path to raw glove data .txt file
-    opt.dataPath = "data/train.t7b"
-    -- word vector dimensionality
-    opt.inputDim = 50 
-    -- nTrainDocs is the number of documents per class used in the training set, i.e.
-    -- here we take the first nTrainDocs documents from each class as training samples
-    -- and use the rest as a validation set.
-
-    -- The Maximal length of a doc, in words
-    opt.max_length=30
-
-    --opt.nTrainDocs = 130000
+function main()
+ 
 	
-	--small
-	opt.nTrainDocs = 256
-	
-    opt.nTestDocs = 0
-    opt.nClasses = 5
-    -- SGD parameters - play around with these
-    opt.nEpochs = 5
-    opt.minibatchSize = 128
-    opt.nBatches = math.floor(opt.nTrainDocs / opt.minibatchSize)
-    opt.learningRate = 0.1
-    opt.learningRateDecay = 0.001
-    opt.momentum = 0.1
-    opt.idx = 1
-
-
-    torch.setnumthreads(3)
-
     print("Loading word vectors...")
     glove_table = load_glove(opt.glovePath, opt.inputDim)
     
@@ -203,7 +172,7 @@ end
 	torch.save('data/small.t7b',tr_data)
 
 
-function main()
+--function main()
     
     -- split data into makeshift training and validation sets
     local training_data = processed_data:sub(1, opt.nClasses*opt.nTrainDocs, 1, processed_data:size(2)):clone()

@@ -2,7 +2,7 @@ function folder(n,k)
 	local range=torch.range(1,n)
 	local giveme=n/k
 	local p=torch.ones(n)/n
-	folds=torch.zeros(giveme,k)
+	local folds=torch.zeros(giveme,k)
 
 	for j=1,k do
 		local pointers=torch.multinomial(p,giveme,false)
