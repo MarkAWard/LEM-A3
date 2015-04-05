@@ -1,7 +1,7 @@
 require 'kfold'
+require 'functions_processing_training'
 require '0_K80_options'
-require '1_K80_process'
-require '2_K80_model'
+require 'model'
 
 
 print("loading data")
@@ -15,18 +15,16 @@ all_tr_data.x=all_tr_data.x:index(1,shuffleIndices)
 all_tr_data.y=all_tr_data.y:index(1,shuffleIndices)
 
 
-print('==> calling folder')
---[[folds is goind to be a k column matrix, where each column
-contains the index of validation observations.--]]
-folds=folder((#all_tr_data.x)[1],opt.valFold):long()
 
+--[[
 TR={}
 VL={}
 --for k=1, opt.valFold do
 
-	print('==> creating fold')
+	
 
 	k=1
+	print('==> populating fold',k)
 	VL.x=all_tr_data.x:index(1,folds[{{},k}])
 	VL.y=all_tr_data.y:index(1,folds[{{},k}])
 
@@ -41,4 +39,4 @@ VL={}
     train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 
 	
-	
+--]]

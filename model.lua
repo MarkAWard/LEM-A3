@@ -2,6 +2,7 @@ require 'torch'
 require 'nn'
 require 'optim'
 	
+if opt.model=='elad' then
 	
     model = nn.Sequential()
 	model:add(nn.TemporalConvolution(50, 70, 4, 1))
@@ -26,6 +27,4 @@ require 'optim'
 	
     criterion = nn.ClassNLLCriterion()
 	
-	
-	
-	
+end
