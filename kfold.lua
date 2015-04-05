@@ -2,7 +2,7 @@ local CrossVal = {}
 
 function CrossVal.KFold(n,k)
 	folds = {}
-	local range = torch.randperm(n)
+	local range = torch.randperm(n):long()
 	local giveme = n / k
 
 	for i = 1, k do
