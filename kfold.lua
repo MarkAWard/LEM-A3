@@ -1,4 +1,6 @@
-function folder(n,k)
+local CrossVal = {}
+
+function CrossVal.KFold(n,k)
 	folds = {}
 	local range = torch.randperm(n)
 	local giveme = n / k
@@ -10,38 +12,4 @@ function folder(n,k)
 	return folds
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+return CrossVal
