@@ -17,7 +17,6 @@ all_tr_data.y=all_tr_data.y:index(1,shuffleIndices)
 --]]
 
 
---[[
 TR={}
 VL={}
 --for k=1, opt.valFold do
@@ -26,8 +25,8 @@ VL={}
 
 	k=1
 	print('==> populating fold',k)
-	VL.x=all_tr_data.x:index(1,folds[{{},k}])
-	VL.y=all_tr_data.y:index(1,folds[{{},k}])
+	VL.x=all_tr_data.x:index(1,all_tr_data.folds[k])
+	VL.y=all_tr_data.y:index(1,all_tr_data.folds[k])
 
 	pointers=torch.ones(#folds)
 	pointers:indexFill(2,torch.LongTensor({k}),0)
