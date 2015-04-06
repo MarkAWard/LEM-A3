@@ -1,6 +1,7 @@
 require 'functions_processing_training'
 require '0_K80_options'
 require 'model'
+require 'optim'
 
 print(opt)
 
@@ -14,15 +15,6 @@ end
 print("loading data")
 all_tr_data=torch.load(opt.bufferPath)
 print(all_tr_data)
-
---[[
-THIS SHOULD BE IN THE TRAINING FUNCTION.
-IT DOES NOT MAKE SENSE TO DO IT HERE JUST ONCE
-print('==> shuffling data file')
-shuffleIndices = torch.randperm((#all_tr_data.x)[1]):long()
-all_tr_data.x=all_tr_data.x:index(1,shuffleIndices)
-all_tr_data.y=all_tr_data.y:index(1,shuffleIndices)
---]]
 
 
 TR={}
@@ -54,7 +46,6 @@ VL={}
 	
     train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 
---	F.train(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 --]]
 
 

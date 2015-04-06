@@ -2,7 +2,7 @@
     opt = {}
 	
 	-- model flag
-	opt.model = 'elad'
+	opt.model = 'bigboy'
 	opt.type = 'cuda'
 	
     -- change these to the appropriate data locations
@@ -17,6 +17,7 @@
 	opt.dataPath = "data/train.t7b"	
 
 	opt.bufferPath = "data/full.t7b"
+	--opt.bufferPath = "data/medium.t7b"
 	
 	--full
     opt.nTrainDocs = 130000	
@@ -31,7 +32,7 @@
 	
 	-- SGD parameters - play around with these
     opt.nEpochs = 50
-    opt.minibatchSize = 512
+    opt.minibatchSize = 128
 	opt.total_number=(opt.nClasses*opt.nTrainDocs)
     opt.nBatches = math.floor((opt.total_number-(opt.total_number)/opt.valFold)/ opt.minibatchSize)
     opt.learningRate = 0.1
