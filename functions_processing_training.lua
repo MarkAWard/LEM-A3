@@ -128,8 +128,9 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         return minibatch_loss, grad_parameters
     end
     
-    num_wrong = 0    
     for epoch=1, opt.nEpochs do
+
+        num_wrong = 0    
 	
 		-- Shuffling the training data   
 		shuffle            = torch.randperm((#data)[1]):long()		
