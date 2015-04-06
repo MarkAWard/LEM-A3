@@ -147,7 +147,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 
 --        local accuracy = test_model(model, data, labels, opt)
         local accuracy = num_wrong / labels:size(1)
-        print("epoch ", epoch, " tr error: ", accuracy)
+	print("epoch ", epoch, " tr error: ", accuracy)
 		
         local accuracy = test_model(model, test_data, test_labels, opt)
         print("epoch ", epoch, " val error: ", accuracy)
@@ -161,7 +161,8 @@ function test_model(model, data, labels, opt)
 
     local pred = model:forward(data)
     local _, argmax = pred:max(2)
-    local err = torch.ne(argmax:double(), labels:double()):sum() / labels:size(1)
+    local wrong = torch.ne(argmax:double(), labels:double()):sum() 
+    local err = wrong / labels:size(1)
 
     --local debugger = require('fb.debugger')
     --debugger.enter()
