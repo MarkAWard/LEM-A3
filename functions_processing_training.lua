@@ -165,7 +165,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
             print("epoch: ", epoch, " batch: ", batch)
         end
 
-		collectgarbage()
+	collectgarbage()
 --        local accuracy = test_model(model, data, labels, opt)
         local accuracy = num_wrong / labels:size(1)
 		print("epoch ", epoch, " tr error: ", accuracy)
@@ -173,7 +173,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         local accuracy = test_model(model, test_data, test_labels, opt)
         print("epoch ", epoch, " val error: ", accuracy)
 
-		collectgarbage()
+	collectgarbage()
     end
 end
 
@@ -207,7 +207,7 @@ function test_model(model, data, labels, opt)
     return no_wrong/n
 end
 
-
+--[[
 function backup_test_model(model, data, labels, opt)
 
 	if opt.type == 'cuda' then
@@ -234,3 +234,4 @@ function backup_test_model(model, data, labels, opt)
 
     return err
 end
+--]]

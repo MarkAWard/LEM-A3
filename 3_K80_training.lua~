@@ -46,9 +46,6 @@ VL={}
 	
 	train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 
-
-
-
 	--test_model(model, VL.x, VL.y, opt)
 --]]
 
