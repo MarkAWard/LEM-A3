@@ -105,36 +105,39 @@ end
 
 function train_model(model, criterion, data, labels, test_data, test_labels, opt)
 
-
-	if opt.type == 'cuda' then
-		model=model:cuda()
-		criterion=criterion:cuda()
-	end	
-		
 		
 	print('==> train')
     parameters, grad_parameters = model:getParameters()
 
     -- optimization functional to train the model with torch's optim library
     local function feval(x) 
-        local minibatch = data:sub(opt.idx, opt.idx + opt.minibatchSize, 1, data:size(2)):clone()
-        local minibatch_labels = labels:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
-        
         model:training()
 		
-		if opt.type == 'cuda' then
-			minibatch=minibatch:cuda()
-			minibatch_labels=minibatch_labels:cuda()
-		end	
+        
 		
+		if opt.type == 'cuda' then
+			
+			local temp_minibatch = data:sub(opt.idx, opt.idx + opt.minibatchSize, 1, data:size(2)):clone()
+			local temp_minibatch_labels = labels:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
+			
+			
+			minibatch=torch.zeros(#temp_minibatch):cuda()
+			minibatch_labels=torch.zeros(#temp_minibatch_labels):cuda()
+			
+			
+			minibatch[{}]=temp_minibatch
+			minibatch_labels[{}]=temp_minibatch_labels
+			
+		else 
+			local minibatch = data:sub(opt.idx, opt.idx + opt.minibatchSize, 1, data:size(2)):clone()
+			local minibatch_labels = labels:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
+		end
 		
 		
         local pred = model:forward(minibatch)
-		--print('got here alive1')
 		
         local minibatch_loss = criterion:forward(model.output, minibatch_labels)
 		
-		--print('got here alive2')
 		
         model:zeroGradParameters()
         model:backward(minibatch, criterion:backward(model.output, minibatch_labels))
@@ -175,8 +178,8 @@ end
 function test_model(model, data, labels, opt)
 
 	if opt.type == 'cuda' then
-		data=data:cuda()
-		labels=labels:cuda()
+		data[{}]=data:cuda()
+		labels[{}]=labels:cuda()
 	end	
     
     model:evaluate()

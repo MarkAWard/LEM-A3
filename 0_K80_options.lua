@@ -16,14 +16,14 @@
     
 	opt.dataPath = "data/train.t7b"	
 
-	opt.bufferPath = "data/medium.t7b"
+	opt.bufferPath = "data/full.t7b"
 	
 	--full
-    --opt.nTrainDocs = 130000	
+    opt.nTrainDocs = 130000	
 	--small
 	--opt.nTrainDocs = 256
 	--medium 
-	opt.nTrainDocs = 2000
+	--opt.nTrainDocs = 2000
 	
     opt.nTestDocs = 0
     opt.nClasses = 5
@@ -31,7 +31,7 @@
 	
 	-- SGD parameters - play around with these
     opt.nEpochs = 50
-    opt.minibatchSize = 128
+    opt.minibatchSize = 256
 	opt.total_number=(opt.nClasses*opt.nTrainDocs)
     opt.nBatches = math.floor((opt.total_number-(opt.total_number)/opt.valFold)/ opt.minibatchSize)
     opt.learningRate = 0.1
