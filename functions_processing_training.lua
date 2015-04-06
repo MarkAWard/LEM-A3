@@ -165,6 +165,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
             print("epoch: ", epoch, " batch: ", batch)
         end
 
+		collectgarbage()
 --        local accuracy = test_model(model, data, labels, opt)
         local accuracy = num_wrong / labels:size(1)
 		print("epoch ", epoch, " tr error: ", accuracy)
@@ -177,6 +178,37 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 end
 
 function test_model(model, data, labels, opt)
+
+	local n = (data:size())[1]
+	local no_wrong = 0
+	
+	for t = 1, n, opt.minibatchSize do
+		
+		if opt.type == 'cuda' then
+			local temp  = data[ {{ t, math.min(t+opt.minibatchSize-1, n) }} ]
+			local temp_targets = labels[ {{ t, math.min(t+opt.minibatchSize-1, n) }} ]		
+		
+			inputs=torch.zeros(#temp):cuda()
+			targets=torch.zeros(#temp_targets):cuda()			
+			
+			inputs[{}]=temp
+			targets[{}]=temp_targets
+    	else
+			inputs  = data[ {{ t, math.min(t+opt.minibatchSize-1, n) }} ]
+			targets = labels[ {{ t, math.min(t+opt.minibatchSize-1, n) }} ]		
+		end
+		
+    	local output = model:forward(inputs)
+    	local trash, argmax = output:max(2)
+    	no_wrong = no_wrong + torch.ne(argmax, targets):sum()
+    end
+
+	-- return error
+    return no_wrong/n
+end
+
+
+function backup_test_model(model, data, labels, opt)
 
 	if opt.type == 'cuda' then
 		

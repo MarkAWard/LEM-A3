@@ -32,7 +32,7 @@
 	
 	-- SGD parameters - play around with these
     opt.nEpochs = 50
-    opt.minibatchSize = 128
+    opt.minibatchSize = 512
 	opt.total_number=(opt.nClasses*opt.nTrainDocs)
     opt.nBatches = math.floor((opt.total_number-(opt.total_number)/opt.valFold)/ opt.minibatchSize)
     opt.learningRate = 0.1
@@ -40,8 +40,12 @@
     opt.momentum = 0.1
     opt.idx = 1
 
-
-    torch.setnumthreads(10)
-	torch.manualSeed(123)
+	opt.numcores=10
+	opt.gpudevice=4
+	
+	opt.seed=123
+	
+    torch.setnumthreads(opt.numcores)
+	torch.manualSeed(opt.seed)
 	
 	

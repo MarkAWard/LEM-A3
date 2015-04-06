@@ -7,7 +7,7 @@ print(opt)
 
 if opt.type == 'cuda' then
 	require 'cunn';
-	cutorch.setDevice(3)
+	cutorch.setDevice(opt.gpudevice)
 	cutorch.getDeviceProperties(cutorch.getDevice())
 end
 
@@ -46,6 +46,7 @@ VL={}
 	
     train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 
+	--test_model(model, VL.x, VL.y, opt)
 --]]
 
 
