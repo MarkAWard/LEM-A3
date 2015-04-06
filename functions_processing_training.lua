@@ -172,6 +172,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         local accuracy = test_model(model, test_data, test_labels, opt)
         print("epoch ", epoch, " val error: ", accuracy)
 
+		collectgarbage()
     end
 end
 
