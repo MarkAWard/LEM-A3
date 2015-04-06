@@ -106,8 +106,12 @@ end
 function train_model(model, criterion, data, labels, test_data, test_labels, opt)
 
 
-
-
+	if opt.type == 'cuda' then
+		model=model:cuda()
+		criterion=criterion:cuda()
+	end	
+		
+		
 	print('==> train')
     parameters, grad_parameters = model:getParameters()
 
@@ -117,8 +121,21 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         local minibatch_labels = labels:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
         
         model:training()
+		
+		if opt.type == 'cuda' then
+			minibatch=minibatch:cuda()
+			minibatch_labels=minibatch_labels:cuda()
+		end	
+		
+		
+		
         local pred = model:forward(minibatch)
+		--print('got here alive1')
+		
         local minibatch_loss = criterion:forward(model.output, minibatch_labels)
+		
+		--print('got here alive2')
+		
         model:zeroGradParameters()
         model:backward(minibatch, criterion:backward(model.output, minibatch_labels))
         
@@ -133,7 +150,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         num_wrong = 0    
 	
 		-- Shuffling the training data   
-		shuffle            = torch.randperm((#data)[1]):long()		
+		shuffle = torch.randperm((#data)[1]):long()		
 		data=data:index(1,shuffle)
 		labels=labels:index(1,shuffle)
 
@@ -147,7 +164,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 
 --        local accuracy = test_model(model, data, labels, opt)
         local accuracy = num_wrong / labels:size(1)
-	print("epoch ", epoch, " tr error: ", accuracy)
+		print("epoch ", epoch, " tr error: ", accuracy)
 		
         local accuracy = test_model(model, test_data, test_labels, opt)
         print("epoch ", epoch, " val error: ", accuracy)
@@ -156,6 +173,11 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 end
 
 function test_model(model, data, labels, opt)
+
+	if opt.type == 'cuda' then
+		data=data:cuda()
+		labels=labels:cuda()
+	end	
     
     model:evaluate()
 

@@ -2,6 +2,11 @@ require 'functions_processing_training'
 require '0_K80_options'
 require 'model'
 
+if opt.type == 'cuda' then
+	require 'cunn';
+	cutorch.setDevice(3)
+	cutorch.getDeviceProperties(cutorch.getDevice())
+end
 
 print("loading data")
 all_tr_data=torch.load(opt.bufferPath)

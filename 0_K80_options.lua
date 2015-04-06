@@ -3,7 +3,7 @@
 	
 	-- model flag
 	opt.model = 'elad'
-	opt.type = 'float'
+	opt.type = 'cuda'
 	
     -- change these to the appropriate data locations
     opt.glovePath = "glove/glove.6B.50d.txt" -- path to raw glove data .txt file
