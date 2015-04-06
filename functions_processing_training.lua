@@ -110,21 +110,26 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 
 	print('==> train')
     parameters, grad_parameters = model:getParameters()
-    
+
     -- optimization functional to train the model with torch's optim library
     local function feval(x) 
         local minibatch = data:sub(opt.idx, opt.idx + opt.minibatchSize, 1, data:size(2)):clone()
         local minibatch_labels = labels:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
         
         model:training()
-        local minibatch_loss = criterion:forward(model:forward(minibatch), minibatch_labels)
+        local pred = model:forward(minibatch)
+        local minibatch_loss = criterion:forward(model.output, minibatch_labels)
         model:zeroGradParameters()
         model:backward(minibatch, criterion:backward(model.output, minibatch_labels))
         
+        local _, argmax = pred:max(2)
+        num_wrong = num_wrong + torch.ne(argmax:double(), minibatch_labels:double()):sum()
+
         return minibatch_loss, grad_parameters
     end
     
-    for epoch=1,opt.nEpochs do
+    num_wrong = 0    
+    for epoch=1, opt.nEpochs do
 	
 		-- Shuffling the training data   
 		shuffle            = torch.randperm((#data)[1]):long()		
@@ -139,7 +144,8 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
             print("epoch: ", epoch, " batch: ", batch)
         end
 
-        local accuracy = test_model(model, data, labels, opt)
+--        local accuracy = test_model(model, data, labels, opt)
+        local accuracy = num_wrong / labels:size(1)
         print("epoch ", epoch, " tr error: ", accuracy)
 		
         local accuracy = test_model(model, test_data, test_labels, opt)
