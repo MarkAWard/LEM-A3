@@ -105,6 +105,11 @@ end
 
 function train_model(model, criterion, data, labels, test_data, test_labels, opt)
 
+
+	local n=(#data)[1]
+	-- Shuffling the training data   
+
+
 	print('==> train')
     parameters, grad_parameters = model:getParameters()
     
@@ -122,6 +127,11 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
     end
     
     for epoch=1,opt.nEpochs do
+		shuffle            = torch.randperm(n):long()		
+		data=data:index(1,shuffle)
+		labels=labels:index(1,shuffle)
+
+	
         local order = torch.randperm(opt.nBatches) -- not really good randomization
         for batch=1,opt.nBatches do
             opt.idx = (order[batch] - 1) * opt.minibatchSize + 1
@@ -129,8 +139,11 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
             print("epoch: ", epoch, " batch: ", batch)
         end
 
+        local accuracy = test_model(model, data, labels, opt)
+        print("epoch ", epoch, " tr error: ", accuracy)
+		
         local accuracy = test_model(model, test_data, test_labels, opt)
-        print("epoch ", epoch, " error: ", accuracy)
+        print("epoch ", epoch, " val error: ", accuracy)
 
     end
 end

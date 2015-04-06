@@ -3,9 +3,11 @@
 	
 	-- model flag
 	opt.model = 'elad'
+	opt.type = 'float'
 	
     -- change these to the appropriate data locations
     opt.glovePath = "glove/glove.6B.50d.txt" -- path to raw glove data .txt file
+	opt.results = "results/output.csv" 
     -- word vector dimensionality
     opt.inputDim = 50 
     -- The Maximal length of a doc, in words

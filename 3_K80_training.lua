@@ -30,22 +30,18 @@ VL={}
 
 	pointers=torch.ones(#all_tr_data.folds)
 	pointers:indexFill(2,torch.LongTensor({k}),0)
-		
 	
-	tr_pointers=folds:maskedSelect(pointers:byte()):long()
+	tr_pointers=all_tr_data.folds:maskedSelect(pointers:byte()):long()
 
 	TR.x=all_tr_data.x:index(1,tr_pointers)
 	TR.y=all_tr_data.y:index(1,tr_pointers)
 
 	print('==> calling train_model')
-    train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
-
 	
+    --train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
+
+	F.train(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 --]]
-
-
-all_tr_data.folds
-torch.Tensor(all_tr_data.folds)
 
 
 
