@@ -31,7 +31,7 @@
 	
 	-- SGD parameters - play around with these
     opt.nEpochs = 50
-    opt.minibatchSize = 256
+    opt.minibatchSize = 512
 	opt.total_number=(opt.nClasses*opt.nTrainDocs)
     opt.nBatches = math.floor((opt.total_number-(opt.total_number)/opt.valFold)/ opt.minibatchSize)
     opt.learningRate = 0.1

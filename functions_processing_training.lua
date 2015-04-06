@@ -178,10 +178,17 @@ end
 function test_model(model, data, labels, opt)
 
 	if opt.type == 'cuda' then
-		data[{}]=data:cuda()
-		labels[{}]=labels:cuda()
-	end	
-    
+		
+		local temp = data
+		local temp_labels = labels
+			
+		data=torch.zeros(#temp):cuda()
+		labels=torch.zeros(#temp_labels):cuda()
+			
+		data[{}]=temp
+		labels[{}]=temp_labels
+	end
+
     model:evaluate()
 
     local pred = model:forward(data)
