@@ -40,7 +40,7 @@ VL={}
 	
     --train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 
-	F.train(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
+--	F.train(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 --]]
 
 
