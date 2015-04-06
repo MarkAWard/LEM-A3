@@ -106,8 +106,6 @@ end
 function train_model(model, criterion, data, labels, test_data, test_labels, opt)
 
 
-	local n=(#data)[1]
-	-- Shuffling the training data   
 
 
 	print('==> train')
@@ -127,7 +125,9 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
     end
     
     for epoch=1,opt.nEpochs do
-		shuffle            = torch.randperm(n):long()		
+	
+		-- Shuffling the training data   
+		shuffle            = torch.randperm((#data)[1]):long()		
 		data=data:index(1,shuffle)
 		labels=labels:index(1,shuffle)
 
