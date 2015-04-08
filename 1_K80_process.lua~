@@ -14,10 +14,10 @@ require '0_K80_options'
     print("Computing document input representations...")
     tr_data.x, tr_data.y = preprocess_data(raw_data, glove_table, opt)
 	
-	--print('==> calling folder')
+	print('==> calling folder')
 	--[[folds is going to be a k column matrix, where each column
 	contains the index of validation observations.--]]
-	--tr_data.folds=F.KFold((#tr_data.x)[1],opt.valFold):long()
+	tr_data.folds=F.KFold((#tr_data.x)[1],opt.valFold):long()
 
 
 	--medium set for testing

@@ -164,4 +164,54 @@ if opt.model=='smallerboy' then
 end
 
 
+if opt.model=='smallerboy_200' then
+	
+	--bigrams
+    bigrams = nn.Sequential()
+	bigrams:add(nn.TemporalConvolution(200, 300, 2, 1))
+	bigrams:add(nn.ReLU())
+	bigrams:add(nn.TemporalMaxPooling(3, 2))
+	
+		
+	--trigrams
+    trigrams = nn.Sequential()
+	trigrams:add(nn.TemporalConvolution(200, 300, 3, 1))
+	trigrams:add(nn.ReLU())
+	trigrams:add(nn.TemporalMaxPooling(2, 2))
+	
+	
+	
+	--quadgrams
+    quadgrams = nn.Sequential()
+	quadgrams:add(nn.TemporalConvolution(200, 300, 4, 1))
+	quadgrams:add(nn.ReLU())
+	quadgrams:add(nn.TemporalMaxPooling(1, 2))
+
+	
+	par=nn.Concat(2)
+	par:add(bigrams)
+	par:add(trigrams)
+	par:add(quadgrams)
+
+    model = nn.Sequential()
+	model:add(par)
+
+	
+	model:add(nn.TemporalConvolution(300, 400, 4, 2))
+	model:add(nn.ReLU())
+	model:add(nn.TemporalMaxPooling(4, 2))
+	
+
+
+	model:add(nn.TemporalConvolution(400, 400, 3, 3))
+	model:add(nn.ReLU())
+	model:add(nn.TemporalMaxPooling(3, 1))
+
+	
+	model:add(nn.Reshape(400, true))	
+    model:add(nn.Linear(400, 5))
+	model:add(nn.LogSoftMax())
+	
+    criterion = nn.ClassNLLCriterion()
+end
 
