@@ -117,24 +117,53 @@ if opt.model=='smallerboy' then
 	--bigrams
     bigrams = nn.Sequential()
 	bigrams:add(nn.TemporalConvolution(50, 100, 2, 1))
+	output=bigrams:forward(VL.x)
+--	print(#output)
+
 	bigrams:add(nn.ReLU())
 	bigrams:add(nn.TemporalMaxPooling(3, 2))
 	
+	output=bigrams:forward(VL.x)
+--	print(#output)
+	--10000
+    --14
+    --100
 		
 	--trigrams
     trigrams = nn.Sequential()
 	trigrams:add(nn.TemporalConvolution(50, 100, 3, 1))
 	trigrams:add(nn.ReLU())
+
+	output=trigrams:forward(VL.x)
+--	print(#output)
+
 	trigrams:add(nn.TemporalMaxPooling(2, 2))
 	
+	output=trigrams:forward(VL.x)
+--	print(#output)
+	--10000
+    --14
+    --100
+
 	
 	
 	--quadgrams
     quadgrams = nn.Sequential()
 	quadgrams:add(nn.TemporalConvolution(50, 100, 4, 1))
 	quadgrams:add(nn.ReLU())
-	quadgrams:add(nn.TemporalMaxPooling(1, 2))
 
+	output=quadgrams:forward(VL.x)
+--	print(#output)
+
+
+	quadgrams:add(nn.TemporalMaxPooling(1, 2))
+	
+	output=quadgrams:forward(VL.x)
+--	print(#output)
+	--10000
+    --14
+    --100
+	
 	
 	par=nn.Concat(2)
 	par:add(bigrams)
@@ -144,16 +173,36 @@ if opt.model=='smallerboy' then
     model = nn.Sequential()
 	model:add(par)
 
+	output=model:forward(VL.x)
+	x0=#output
+	--42
+
 	
 	model:add(nn.TemporalConvolution(100, 150, 4, 2))
 	model:add(nn.ReLU())
+
+	output=model:forward(VL.x)
+	x1=#output
+	--20
 	model:add(nn.TemporalMaxPooling(4, 2))
 	
+
+	output=model:forward(VL.x)
+	x2=#output
+	--9
 
 
 	model:add(nn.TemporalConvolution(150, 170, 3, 3))
 	model:add(nn.ReLU())
+
+	output=model:forward(VL.x)
+	x3=#output
+
+
 	model:add(nn.TemporalMaxPooling(3, 1))
+
+	output=model:forward(VL.x)
+	x4=#output
 
 	
 	model:add(nn.Reshape(170, true))	

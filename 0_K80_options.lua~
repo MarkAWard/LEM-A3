@@ -3,6 +3,7 @@
 	
 	-- model flag
 	opt.model = 'bigboy'
+	opt.runName = 'testing'	
 	opt.type = 'cuda'
 	
     -- change these to the appropriate data locations
@@ -25,7 +26,7 @@
 	--small
 	--opt.nTrainDocs = 256
 	--medium 
-	--opt.nTrainDocs = 2000
+	--opt.nTrainDocs = 10000
 	
     opt.nTestDocs = 0
     opt.nClasses = 5
@@ -42,7 +43,7 @@
     opt.idx = 1
 
 	opt.numcores=10
-	opt.gpudevice=3
+	opt.gpudevice=4
 	
 	opt.seed=123
 

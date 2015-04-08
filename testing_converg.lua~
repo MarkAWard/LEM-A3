@@ -1,0 +1,9 @@
+require 'cunn';
+holder=torch.load('model_bigboy_fold_1_epoch_29.net')
+eopch_29=holder:getParameters()
+
+holder=torch.load('model_bigboy_fold_1_epoch_28.net')
+eopch_28=holder:getParameters()
+
+
+

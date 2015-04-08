@@ -168,7 +168,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 
 		collectgarbage()
 
-		local filename = paths.concat(opt.TrainingFolder,'model_' .. opt.model .. '_fold_' .. k .. '_epoch_' .. epoch .. '.net')
+		local filename = paths.concat(opt.TrainingFolder,'model_' .. opt.model .. '_run_' .. opt.runName .. '_fold_' .. k .. '_epoch_' .. epoch .. '.net')
 		torch.save(filename, model)
 
         local accuracy_tr = num_wrong / labels:size(1)
@@ -183,7 +183,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 
 		collectgarbage()
     end
-	local filename = paths.concat(opt.TrainingFolder,'ModelMetrics_' .. opt.model .. '_fold_' .. k .. '.t7b')
+	local filename = paths.concat(opt.TrainingFolder,'ModelMetrics_' .. opt.model .. '_run_' .. opt.runName ..'_fold_' .. k .. '.t7b')
 	torch.save(filename,metric_holder)
 end
 

@@ -2,7 +2,8 @@
     opt = {}
 	
 	-- model flag
-	opt.model = 'bigboy'
+	opt.model = 'smallerboy'
+	opt.runName = 'testing'	
 	opt.type = 'cuda'
 	
     -- change these to the appropriate data locations
@@ -17,15 +18,15 @@
     
 	opt.dataPath = "data/train.t7b"	
 
-	--opt.bufferPath = "data/full.t7b"
-	opt.bufferPath = "data/medium.t7b"
+	opt.bufferPath = "data/full.t7b"
+	--opt.bufferPath = "data/medium.t7b"
 	
 	--full
-    --opt.nTrainDocs = 130000	
+    opt.nTrainDocs = 130000	
 	--small
 	--opt.nTrainDocs = 256
 	--medium 
-	opt.nTrainDocs = 2000
+	--opt.nTrainDocs = 10000
 	
     opt.nTestDocs = 0
     opt.nClasses = 5
@@ -42,7 +43,7 @@
     opt.idx = 1
 
 	opt.numcores=10
-	opt.gpudevice=3
+	opt.gpudevice=4
 	
 	opt.seed=123
 
