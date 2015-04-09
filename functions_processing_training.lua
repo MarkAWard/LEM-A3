@@ -103,6 +103,19 @@ function preprocess_data(raw_data, wordvector_table, opt)
     return data, labels
 end
 
+
+function preprocess_text(text)
+    text = text:gsub("\\n", " ")
+    -- URL
+    -- repeated / elongated
+    text = text:gsub("n't ", " not "):gsub("'re ", " are "):gsub("'ve ", " have "):gsub("'ll ", " will "):gsub("'d ", " would "):gsub("'s ", " ")
+    text = text:gsub("[8:=;]['`-]?[%]%)D]", " SMILE "):gsub("[8:=;]['`-]?[%[%(]", " SADFACE "):gsub("[8:=;]['`-]?[pP]", " LOLFACE "):gsub("[8:=;]['`-]?[|\\/]", " NEUTRALFACE ") 
+    text = text:gsub("[-+]?[.%d]*[%d]+[:,.%d]*", "NUMBER") 
+    -- can possibly do number, money, time, date...
+    return text
+end
+
+
 function train_model(model, criterion, data, labels, test_data, test_labels, opt)
 
 		
