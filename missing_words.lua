@@ -11,7 +11,7 @@ for i=1, 5 do
 	for j=1, 130000 do
 		local index = train.index[i][j]
 		local document = ffi.string(torch.data(train.content:narrow(1, index, 1))):lower()
-		document = document:gsub("\\n", ""):gsub("n't ", " not "):gsub("'re ", " are "):gsub("'ve ", " have "):gsub("'ll ", " will "):gsub("'d ", " would "):gsub("'s ", " ")
+		document = document:gsub("\\n", " "):gsub("n't ", " not "):gsub("'re ", " are "):gsub("'ve ", " have "):gsub("'ll ", " will "):gsub("'d ", " would "):gsub("'s ", " ")
 		document = document:gsub("[8:=;]['`-]?[%]%)D]", " SMILE "):gsub("[8:=;]['`-]?[%[%(]", " SADFACE "):gsub("[8:=;]['`-]?[pP]", " LOLFACE "):gsub("[8:=;]['`-]?[|\\/]", " NEUTRALFACE "):gsub("[-+]?[.%d]*[%d]+[:,.%d]*", "NUMBER")
 
 		for word in document:gmatch("%S+") do
