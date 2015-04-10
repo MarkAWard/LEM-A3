@@ -1,8 +1,9 @@
-F=require 'folder'
+--F=require 'folder'
 require 'functions_processing_training'
 require '0_K80_options'
 
-	print(opt)
+print(opt)
+
 
     print("Loading word vectors...")
     glove_table = load_glove(opt.glovePath, opt.inputDim)
@@ -16,11 +17,15 @@ require '0_K80_options'
 	
 	--print('==> calling folder')
 	--[[folds is going to be a k column matrix, where each column
-	contains the index of validation observations.--]]
-	--tr_data.folds=F.KFold((#tr_data.x)[1],opt.valFold):long()
+	--contains the index of validation observations.--]]
+
+	tr_data.folds=F.KFold((#tr_data.x)[1],opt.valFold):long()
 
 
 	--medium set for testing
 	torch.save(opt.bufferPath,tr_data)
 
 	print(tr_data)
+
+
+

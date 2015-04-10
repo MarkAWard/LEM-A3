@@ -19,6 +19,8 @@ print(all_tr_data)
 
 TR={}
 VL={}
+
+
 --for k=1, opt.valFold do
 
 	
@@ -29,6 +31,14 @@ VL={}
 
 	VL.x=all_tr_data.x:index(1,all_tr_data.folds[{{},k}])
 	VL.y=all_tr_data.y:index(1,all_tr_data.folds[{{},k}])
+
+	--vl_pointers=all_tr_data.folds[{{},k}]:long()	
+
+	--for i=1, vl_pointers:size(1) do
+	--	VL.x[{i,{},{}}]=all_tr_data.x[{vl_pointers[i],{},{}}]
+	--	VL.y[i]=all_tr_data.y[vl_pointers[i]]
+	--end
+
 
 	pointers=torch.ones(#all_tr_data.folds)
 	pointers:indexFill(2,torch.LongTensor({k}),0)
@@ -58,7 +68,8 @@ VL={}
 		criterion=criterion:cuda()
 	end	
 
-	--model=torch.load('training/model_smallerboy_run_testing_fold_1_epoch_7.net' )
+	print('==> loading previous model')
+	--model=torch.load('training/model_smallerboy_200_run_trying_fold_1_epoch_4.net' )
 
 	train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 
