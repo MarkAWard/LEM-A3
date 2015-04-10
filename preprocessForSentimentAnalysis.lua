@@ -145,9 +145,6 @@ local stringx = require('pl.stringx')
 require 'ffi'
 
 
-
-
-
 --[[  FOR TESTING BIG ALLOCATION ON K80
 test = torch.randn(100000000,20)
 splitPoint = 70000000
@@ -158,18 +155,17 @@ testCropped[splitPoint]
 --]]
 
 
-
-
-local howManyReviews = 650000 -- number of reviews in the csv file
+local howManyReviews = 8--650000 -- number of reviews in the csv file
 local maxSentencesFromEachDocument = 5 -- if K80 can do it, increase it a lot so we can take account for all the sentences.
 local maxSeqLength = 20
+vocab_idx = 0
+vocab_map = {}
 local x = torch.zeros( howManyReviews * maxSentencesFromEachDocument,  maxSeqLength )
-local vocab_idx = 0
-local vocab_map = {}
+ idxSentence = 1
+
 function load_csv(fileName)
 	fd = io.open(fileName)	
 	for review in fd:lines() do
-	
 		sentimentLabel = review:sub(1,1)
 		-- The input from the csv will be like 1,"document", so we simply extract the document with the following commands.
 		review = review:gsub("^...","") -- removes label, comma, opening quotes
@@ -213,122 +209,34 @@ function load_csv(fileName)
 		-- to better capture the statistical language analogies.
 		----------------------------------------------------------------------------------------------------------------------
 		
-		local idxSentence = 0
-		sentences = stringx.split(document, ".")
+		sentences = stringx.split(review, ".")
 		for idx, sentence in pairs(sentences) do
+			-- A review might have more sentences than the ones we can store. Simply throw them out.
+			if idx > maxSentencesFromEachDocument then 
+				break
+			end
+			
 			if #sentence ~= 0 then
-				words = stringx.split(sentence)
+				local words = stringx.split(sentence)
 				for i =1, #words do
 					-- We only use the first "maxSeqLength" of words in a sentence
 					if i > maxSeqLength then 
 						break 
 					end
-					
+					-- if the word doesn't exist in the dictionary then add it to it.		
 					if vocab_map[ words[i]]  == nil then
 						vocab_idx = vocab_idx + 1
 						vocab_map[ words[i] ] = vocab_idx
 					end
 					x[idxSentence][i] = vocab_map[ words[i] ]
-			   end
-			   idxSentence = idxSentence + 1
-			   
-				print( idx .. ") "..sentence)				 
+				end
+				idxSentence = idxSentence + 1
 			end
-		end	
-		--print(document)
+		end
 	end
 	fd:close()	
+	-- remove the empty lines we didn't get to use (they are a lot because we pre-allocated the maximum amount of space for speed)
+	-- idxSentence was incremented in the end of the loop so that's why we subtract 1
+	x = x:sub(1, idxSentence-1) 
 	return x	
 end
-
-function stringToIndices(sentence)
-	
-end
-
-
---- s:gsub("^(.)(.*)", "%2%1")
--- take the label and put it in the end. This way the rnn will use it to unfold the tree
--- text:gsub("^(.)(.*)", "%2%1")
--- BEFORE WE TURN IT TO LOWER CASE     -- If a word is written in all capital
---    
-
-function load_data(fname)
-   local data = file.read(fname)
-   data = stringx.replace(data, '\n', '<eos>')
-   data = stringx.split(data)
-   print(string.format("Loading %s, size of data = %d", fname, #data))
-   local x = torch.zeros(#data)
-   for i = 1, #data do
-      if vocab_map[data[i]] == nil then
-         vocab_idx = vocab_idx + 1
-         vocab_map[data[i]] = vocab_idx
-      end
-      x[i] = vocab_map[data[i]]
-   end
-   return x
-end
-
-
-function preprocess_data(raw_data, wordvector_table, opt)
-
-   --wordvector_table=glove_table
-
-    -- opt.max_length is going to be the maximum length of a document.
-    -- OPEN ISSUE: we can either zero pad if the document is too short,
-    -- or do like Collbert et al and plug a repeating code word "END".
-    -- THE CURRENT implementation is zeros.
-
-    local data = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length,opt.inputDim)
-    local labels = torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
-    
-    -- use torch.randperm to shuffle the data, since it's ordered by class in the file
-    local order = torch.randperm(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs))
-
-
-    
-    for i=1,opt.nClasses do
-        for j=1,opt.nTrainDocs+opt.nTestDocs do
-            local k = order[(i-1)*(opt.nTrainDocs+opt.nTestDocs) + j]
-            
-            local doc_size = 1
-            
-            local index = raw_data.index[i][j]
-            -- standardize to all lowercase
-            local document = ffi.string(torch.data(raw_data.content:narrow(1, index, 1))):lower()
-            
-            -- break each review into words and compute the document average
-            for word in document:gmatch("%S+") do
-                if wordvector_table[word:gsub("%p+", "")] then
-                    if (doc_size<opt.max_length) then 
-                        --print(#document)
-                        local embedding=wordvector_table[word:gsub("%p+", "")]
-                        data[k][{{doc_size,{}}}]:add(embedding)
-                        doc_size = doc_size+1
-                    end
-                end
-            end
-            labels[k] = i
-        end
-    end
-    --data=data:reshape(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length)
-    return data, labels
-end
-
-
-
---[[
-The function expects an input of the form 
-Number,"Text text text"
---]]
-function preprocess_train_text(text)
-
-	
-    	
-
-    
-    			
-	-- text = text:gsub("[-+]?[.%d]*[%d]+[:,.%d]*", "NUMBER") I think we want to capture the different number i.e. 9/10 != 1/10    
-    -- can possibly do number, money, time, date...
-    return text
-end
-
