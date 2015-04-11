@@ -21,7 +21,7 @@
 	opt.TrainingFolder = "training/" 
 
     
-	opt.dataPath = "data/train.t7b"	
+	opt.dataPath = "data/TR_set.csv"	
 --	opt.bufferPath = "data/full.t7b"
 	opt.bufferPath = "data/full_100x200.t7b"
 	--opt.bufferPath = "data/medium.t7b"
