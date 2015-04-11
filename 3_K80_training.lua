@@ -14,53 +14,42 @@ end
 
 print("loading data")
 all_tr_data=torch.load(opt.bufferPath)
-all_tr_data.folds=torch.load('data/folds.t7b')
 print(all_tr_data)
+
+
+print('==> creating validation')
 
 TR={}
 VL={}
---for k=1, opt.valFold do
-
-	
-
-	k=1
-	print('==> populating fold',k)
 
 
-	VL.x=all_tr_data.x:index(1,all_tr_data.folds[{{},k}])
-	VL.y=all_tr_data.y:index(1,all_tr_data.folds[{{},k}])
+shuffle = torch.randperm((#all_tr_data.x)[1]):long()
 
-	pointers=torch.ones(#all_tr_data.folds)
-	pointers:indexFill(2,torch.LongTensor({k}),0)
-	
-	tr_pointers=all_tr_data.folds:maskedSelect(pointers:byte()):long()
+for i=1, shuffle:size(1) do
+	all_tr_data.x[{i,{},{}}]=all_tr_data.x[{shuffle[i],{},{}}]
+	all_tr_data.y[i]=all_tr_data.y[shuffle[i]]
+end
+
+temp=.8*(all_tr_data.x:size(1))
+VL.x=all_tr_data.x[{{temp+1,(all_tr_data.x:size(1))},{},{}}]
+VL.y=all_tr_data.y[{{temp+1,(all_tr_data.x:size(1))}}]
 
 
-	TR.x=torch.zeros(585000,30,200)
+TR.x=all_tr_data.x[{{1,temp},{},{}}]
+TR.y=all_tr_data.y[{{1,temp}}]
 
--- this crushes memory
---	TR.x=all_tr_data.x:index(1,tr_pointers)
 
--- This should work. doing a loop instead.
---	TR.x:indexCopy(1,tr_pointers,all_tr_data.x)
-	
+print('==> calling train_model')
 
-	for i=1, tr_pointers:size(1) do
-		TR.x[{i,{},{}}]=all_tr_data.x[{tr_pointers[i],{},{}}]
-	end
+if opt.type == 'cuda' then
+	model=model:cuda()
+	criterion=criterion:cuda()
+end	
 
-	TR.y=all_tr_data.y:index(1,tr_pointers)
+--print('==> loading previous model')
+--model=torch.load('training/model_smallerboy_200_run_trying_fold_1_epoch_4.net' )
 
-	print('==> calling train_model')
-
-	if opt.type == 'cuda' then
-		model=model:cuda()
-		criterion=criterion:cuda()
-	end	
-
-	--model=torch.load('training/model_smallerboy_run_testing_fold_1_epoch_7.net' )
-
-	train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
+train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
 
 
 

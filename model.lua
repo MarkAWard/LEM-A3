@@ -2,24 +2,16 @@
 if opt.model=='elad' then
 	
     model = nn.Sequential()
-	model:add(nn.TemporalConvolution(50, 70, 4, 1))
-	model:add(nn.ReLU())
+	model:add(nn.TemporalConvolution(200, 300, 4, 1))
+	model:add(nn.Tanh())
 	model:add(nn.TemporalMaxPooling(3, 1))
 	
-	model:add(nn.TemporalConvolution(70, 90, 3, 1))
-	model:add(nn.ReLU())
-	model:add(nn.TemporalMaxPooling(2, 1))
+	model:add(nn.TemporalConvolution(300, 300, 6, 2))
+	model:add(nn.Tanh())
+	model:add(nn.TemporalMaxPooling(3, 1))
 
-	model:add(nn.TemporalConvolution(90, 120, 4, 3))
-	model:add(nn.ReLU())
-	model:add(nn.TemporalMaxPooling(3, 2))
-
-	model:add(nn.TemporalConvolution(120, 150, 2, 1))
-	model:add(nn.ReLU())
-	model:add(nn.TemporalMaxPooling(2, 1))
-	
-    model:add(nn.Reshape(150, true))	
-    model:add(nn.Linear(150, 5))
+    model:add(nn.Reshape(300*44, true))	
+    model:add(nn.Linear(300*44, 5))
 	model:add(nn.LogSoftMax())
 	
     criterion = nn.ClassNLLCriterion()
@@ -31,12 +23,12 @@ if opt.model=='bigboy' then
 	
 	--bigrams
     bigrams = nn.Sequential()
-	bigrams:add(nn.TemporalConvolution(50, 70, 2, 1))
+	bigrams:add(nn.TemporalConvolution(200, 250, 2, 1))
 	bigrams:add(nn.ReLU())
-	bigrams:add(nn.TemporalConvolution(70, 90, 2, 1))
+	bigrams:add(nn.TemporalConvolution(250, 300, 2, 1))
 	bigrams:add(nn.ReLU())
 	bigrams:add(nn.TemporalMaxPooling(3, 1))
-	bigrams:add(nn.TemporalConvolution(90, 110, 2, 1))
+	bigrams:add(nn.TemporalConvolution(300, 300, 2, 1))
 	bigrams:add(nn.ReLU())
 	bigrams:add(nn.TemporalMaxPooling(4, 1))
 
@@ -50,12 +42,12 @@ if opt.model=='bigboy' then
 	
 	--trigrams
     trigrams = nn.Sequential()
-	trigrams:add(nn.TemporalConvolution(50, 70, 3, 1))
+	trigrams:add(nn.TemporalConvolution(200, 250, 3, 1))
 	trigrams:add(nn.ReLU())
-	trigrams:add(nn.TemporalConvolution(70, 90, 3, 1))
+	trigrams:add(nn.TemporalConvolution(250, 300, 3, 1))
 	trigrams:add(nn.ReLU())
 	trigrams:add(nn.TemporalMaxPooling(3, 1))
-	trigrams:add(nn.TemporalConvolution(90, 110, 2, 1))
+	trigrams:add(nn.TemporalConvolution(300, 300, 2, 1))
 	trigrams:add(nn.ReLU())
 	trigrams:add(nn.TemporalMaxPooling(2, 1))
 	
@@ -69,9 +61,9 @@ if opt.model=='bigboy' then
 	
 	--quadgrams
     quadgrams = nn.Sequential()
-	quadgrams:add(nn.TemporalConvolution(50, 80, 4, 1))
+	quadgrams:add(nn.TemporalConvolution(200, 250, 4, 1))
 	quadgrams:add(nn.ReLU())
-	quadgrams:add(nn.TemporalConvolution(80, 110, 4, 1))
+	quadgrams:add(nn.TemporalConvolution(250, 300, 4, 1))
 	quadgrams:add(nn.ReLU())
 	quadgrams:add(nn.TemporalMaxPooling(3, 1))
 	
@@ -90,19 +82,19 @@ if opt.model=='bigboy' then
     model = nn.Sequential()
 	model:add(par)
 	
-	model:add(nn.TemporalConvolution(110, 150, 4, 2))
+	model:add(nn.TemporalConvolution(300, 300, 4, 2))
 	model:add(nn.ReLU())
 	model:add(nn.TemporalMaxPooling(3, 2))
 	
-	model:add(nn.TemporalConvolution(150, 170, 4, 3))
+	model:add(nn.TemporalConvolution(300, 300, 4, 3))
 	model:add(nn.ReLU())
 	model:add(nn.TemporalMaxPooling(3, 1))
 
-	model:add(nn.TemporalConvolution(170, 200, 2, 1))
+	model:add(nn.TemporalConvolution(300, 300, 2, 1))
 	model:add(nn.ReLU())
 	
-	model:add(nn.Reshape(200, true))	
-    model:add(nn.Linear(200, 5))
+	model:add(nn.Reshape(300, true))	
+    model:add(nn.Linear(300, 5))
 	model:add(nn.LogSoftMax())
 	
     criterion = nn.ClassNLLCriterion()

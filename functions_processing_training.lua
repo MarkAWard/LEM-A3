@@ -3,6 +3,7 @@ require 'nn'
 require 'optim'
 
 ffi = require('ffi')
+stopWords = require('stopwords.lua')
 
 --- Parses and loads the GloVe word vectors into a hash table:
 -- glove_table['word'] = vector
@@ -102,6 +103,106 @@ function preprocess_data(raw_data, wordvector_table, opt)
     --data=data:reshape(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length)
     return data, labels
 end
+
+
+function load_train_csv( filename, wordvector_table, opt)
+    
+    local data = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length, opt.inputDim)
+    local labels = torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
+
+    k = 1
+    f = io.open(filename, 'r')
+    for line in f:lines() do
+
+        -- The input from the csv will be like 1,"document", so we simply extract the document with the following commands.
+        labels[k] = line:sub(1,1)
+        local review = review:gsub("^..."," "):gsub(".$"," ") -- removes label, comma, and leading/trailing quotes
+        -- use the preprocessing defined below
+        review = preprocess_text(review)
+
+        doc_size = 1 
+        for word in review:gmatch("%S+") do
+            if wordvector_table[word] then
+                data[k][{{ doc_size, {} }}]:add( wordvector_table[word] )
+                doc_size = doc_size + 1
+            else if wordvector_table[word:gsub("%p+", "")] then
+                data[k][{{ doc_size, {} }}]:add( wordvector_table[ word:gsub("%p+", "") ] )
+                doc_size = doc_size + 1
+            else
+                -- pass
+            end
+        end
+
+        -- if the length of the review was less than the max length allowed then
+        -- the repeat the review text in the same order till we hit the max length
+        len = doc_size
+        while doc_size < opt.max_length do
+            data[k][{{ doc_size, {} }}]:add( data[k][{{ doc_size % len + 1, {} }}] )
+        end
+
+    end
+    f:close()
+
+    return data, labels
+
+end
+
+
+
+function preprocess_text(text)
+
+    text = text:gsub("^\"", " "):gsub("\"$", " "):
+                gsub("\\n", " "):gsub("\\\"\"", " ")
+
+    text = text:gsub("http%S+", " url "):
+                gsub("www%S+", " url ")
+    
+    text = text:gsub("(%a+)(%p+) ", "%1 %2 "):
+                gsub(" (%p+)(%a+) ", " %1 %2 ")
+
+    text = text:gsub(" [A-Z][A-Z]+ ", " intense %1")
+
+    text = text:lower()
+
+    text = text:gsub("can't", " not "):
+                gsub("won't", " not "):
+                gsub("n't ", " not "):
+                gsub("'re ", " "):
+                gsub("'ve ", " "):
+                gsub("'ll ", " "):
+                gsub("'d ", " "):
+                gsub("'s ", " ")
+
+    text = text:gsub("[8:=;]['`-]?[%]%)d]", " :) "):
+                gsub("[8:=;]['`-]?[%[%(]", " :( "):
+                gsub("[8:=;]['`-]?[p]", " :p "):
+                gsub("[8:=;]['`-]?[|\\/]", " :| ") 
+
+    text = text:gsub("$[.]?[%d]+[,.%d]*", " money ") 
+
+    -- repeated punctuation 
+    punct = {"!", "%?", "!%?", "%.", "%-"}
+    for _, p in pairs(punct) do
+        text = text:gsub("["..p.."]".."["..p.."]".."["..p.."]+", " repeat " .. p .. " ")
+    end
+
+    -- elongated words only do a subset of letter
+    letters = {"m", "y", "w", "g", "h"}
+    for _, l in pairs(letters) do
+        prev = string.char(l:byte()-1)
+        nxt = string.char(l:byte()+1)
+        text = text:gsub(" ([a-"..prev..nxt.."-z]+)"..l..l..l.."+ ", " very %1"..l.." ")
+    end
+    text = text:gsub(" soo+ ", " very so "):
+                gsub(" noo+ ", " very no ")
+
+    for _, stopWord in pairs(stopWords) do
+        text = text:gsub(" "..stopWord.." ", " ")
+    end
+
+    return text
+end
+
 
 function train_model(model, criterion, data, labels, test_data, test_labels, opt)
 
