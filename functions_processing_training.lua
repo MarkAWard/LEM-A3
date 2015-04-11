@@ -280,7 +280,10 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         for batch=1,opt.nBatches do
             opt.idx = (order[batch] - 1) * opt.minibatchSize + 1
             optim.sgd(feval, parameters, opt)
-			if batch % 10 ==0 then print("epoch: ", epoch, " batch: ", batch) end
+			if batch % 20 ==0 then 
+				print("epoch: ", epoch, " batch: ", batch) 
+				collectgarbage()
+			end
         end
 
 		collectgarbage()
