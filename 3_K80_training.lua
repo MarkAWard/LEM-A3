@@ -1,15 +1,24 @@
 require 'functions_processing_training'
 require '0_K80_options'
-require 'model'
+M = require 'model'
 require 'optim'
 
 print(opt)
+
 
 if opt.type == 'cuda' then
 	require 'cunn';
 	cutorch.setDevice(opt.gpudevice)
 	cutorch.getDeviceProperties(cutorch.getDevice())
 end
+
+if opt.model == 'lookup_elad' then
+	glove_table, dictionay_size = load_glove(opt.glovePath, opt.inputDim)
+end
+
+model, criterion = M:select_model(opt, dictionay_size)
+
+init_model(model, glove_table, opt)
 
 
 all_tr_data={}
