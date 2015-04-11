@@ -6,12 +6,12 @@ if opt.model=='elad' then
 	model:add(nn.Tanh())
 	model:add(nn.TemporalMaxPooling(3, 1))
 	
-	model:add(nn.TemporalConvolution(300, 300, 7, 1))
+	model:add(nn.TemporalConvolution(300, 300, 6, 2))
 	model:add(nn.Tanh())
 	model:add(nn.TemporalMaxPooling(3, 1))
 
-    model:add(nn.Reshape(300*17, true))	
-    model:add(nn.Linear(300*17, 5))
+    model:add(nn.Reshape(300*44, true))	
+    model:add(nn.Linear(300*44, 5))
 	model:add(nn.LogSoftMax())
 	
     criterion = nn.ClassNLLCriterion()

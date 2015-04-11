@@ -28,7 +28,7 @@
 	
 	--full
     opt.nTrainDocs = 130000	
-	
+	opt.nTestDocs = 0
     --opt.nTestDocs = 0
     opt.nClasses = 5
 	opt.valFold=10

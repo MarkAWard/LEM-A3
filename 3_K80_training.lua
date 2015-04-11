@@ -17,16 +17,22 @@ all_tr_data=torch.load(opt.bufferPath)
 all_tr_data.folds=torch.load('data/folds.t7b')
 print(all_tr_data)
 
+
+print('==> creating validation')
+
 TR={}
 VL={}
 
 
---for k=1, opt.valFold do
+shuffle = torch.randperm((#all_tr_data.x)[1]):long()
 
-	
+for i=1, shuffle:size(1) do
+	all_tr_data.x[{i,{},{}}]=all_tr_data.x[{shuffle[i],{},{}}]
+	all_tr_data.y[i]=all_tr_data.y[shuffle[i]]
+end
 
-	k=1
-	print('==> populating fold',k)
+
+VL.x=all_tr_data.x:index(1,all_tr_data.folds[{{},k}])
 
 
 	VL.x=all_tr_data.x:index(1,all_tr_data.folds[{{},k}])
