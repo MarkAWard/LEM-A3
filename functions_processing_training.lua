@@ -93,7 +93,7 @@ function preprocess_data(raw_data, wordvector_table, opt)
                 if wordvector_table[word:gsub("%p+", "")] then
                     if (doc_size<opt.max_length) then 
                         --print(#document)
-                        local embedding=wordvector_table[word:gsub("%p+", "")]
+                        local embedding=wordvector_table[word:gsub("%p+", "")][1]
                         data[k][{{doc_size,{}}}]:add(embedding)
                         doc_size = doc_size+1
                     end
@@ -124,11 +124,11 @@ function load_train_csv( filename, wordvector_table, opt)
         doc_size = 1 
         for word in review:gmatch("%S+") do
             if wordvector_table[word] then
-                data[k][{{ doc_size, {} }}]:add( wordvector_table[word] )
+                data[k][{{ doc_size, {} }}]:add( wordvector_table[word][1] )
                 doc_size = doc_size + 1
             else 
                 if wordvector_table[word:gsub("%p+", "")] then
-                    data[k][{{ doc_size, {} }}]:add( wordvector_table[ word:gsub("%p+", "") ] )
+                    data[k][{{ doc_size, {} }}]:add( wordvector_table[ word:gsub("%p+", "") ][1] )
                     doc_size = doc_size + 1
             -- else
             --     pass
