@@ -351,31 +351,44 @@ function init_model(model, dict, opt)
 	end
 end
 
---[[
-function backup_test_model(model, data, labels, opt)
 
-	if opt.type == 'cuda' then
-		
-		local temp = data
-		local temp_labels = labels
-			
-		data=torch.zeros(#temp):cuda()
-		labels=torch.zeros(#temp_labels):cuda()
-			
-		data[{}]=temp
-		labels[{}]=temp_labels
+function reviewToIndices(inputFile, glove, opt)
+
+    local data   = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length)
+    local labels = torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
+	local stringx = require('pl.stringx')
+	local fd = io.open(inputFile)	
+	local output = torch.zeros(  * maxSentencesFromEachDocument,  maxSeqLength + 1 ):add(6)
+
+	k=1
+	for review in fd:lines() do
+		labels[k] = review:sub(1,1)
+		review = review:gsub("^..","") -- removes label, comma
+		words = stringx.split(review)
+		doc_size = 1
+		for word in words:
+			if doc_size > opt.maxLength then break end
+			-- drop if not in glove 
+			if glove[word] then 
+				data[k][doc_size] = glove[word][2]
+				doc_size = doc_size + 1
+            else 
+                if glove[word:gsub("%p+", "")] then
+                    data[k][doc_size] = glove[ word:gsub("%p+", "") ][2] 
+                    doc_size = doc_size + 1
+          	 -- else
+             --     pass
+                end
+            end
+        end
+        
+        i=1
+        while doc_size <= opt.max_length do
+			data[k][doc_size]=data[k][i]
+			i=i+1
+			doc_size=doc_size+1
+        end
+        k = k + 1    
 	end
-
-    model:evaluate()
-
-    local pred = model:forward(data)
-    local _, argmax = pred:max(2)
-    local wrong = torch.ne(argmax:double(), labels:double()):sum() 
-    local err = wrong / labels:size(1)
-
-    --local debugger = require('fb.debugger')
-    --debugger.enter()
-
-    return err
+	return data, labels
 end
---]]
