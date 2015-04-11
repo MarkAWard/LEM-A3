@@ -343,9 +343,11 @@ end
 -- Dict: The dictionary which contains the word embeddings and their respective indexes.
 -- EmbeddingSize: The size of a word's embedding.
 --]]
-function initLookUpTable(model, dict, embeddingSize)
-	for key,val in pairs(dict) do                                                               
-		model:get(1):getParameters()[ {{ (val[2]-1) * embeddingSize + 1, val[2] * embeddingSize }} ] = val[1]
+function init_model(model, dict, opt)
+	if opt.model == 'lookup_elad' then
+		for key,val in pairs(dict) do                                                               
+			model:get(1):getParameters()[ {{ (val[2]-1) * opt.inputDim + 1, val[2] * opt.inputDim }} ] = val[1]
+		end
 	end
 end
 
