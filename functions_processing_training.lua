@@ -120,8 +120,14 @@ function load_train_csv( filename, wordvector_table, opt)
         review = preprocess_text(review)
 
         doc_size = 1 
+		if k % 1000 ==0 then print(k) end
+
         for word in review:gmatch("%S+") do
+			if (doc_size > opt.max_length) then 
+				break
+			end
             if wordvector_table[word] then
+				--print(doc_size)
                 data[k][{{ doc_size, {} }}]:add( wordvector_table[word] )
                 doc_size = doc_size + 1
             else 
@@ -136,9 +142,12 @@ function load_train_csv( filename, wordvector_table, opt)
 
         -- if the length of the review was less than the max length allowed then
         -- the repeat the review text in the same order till we hit the max length
-        len = doc_size
-        while doc_size < opt.max_length do
-            data[k][{{ doc_size, {} }}]:add( data[k][{{ doc_size % len + 1, {} }}] )
+		i=1
+        while doc_size <= opt.max_length do
+			data[k][{{ doc_size, {} }}]=data[k][{{ i, {} }}]
+			i=i+1
+			doc_size=doc_size+1
+            --data[k][{{ doc_size, {} }}]:add( data[k][{{ (doc_size - 1) % len + 1, {} }}] )
         end
         k = k + 1
     end
@@ -270,7 +279,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         for batch=1,opt.nBatches do
             opt.idx = (order[batch] - 1) * opt.minibatchSize + 1
             optim.sgd(feval, parameters, opt)
-            print("epoch: ", epoch, " batch: ", batch)
+			if batch % 10 ==0 then print("epoch: ", epoch, " batch: ", batch) end
         end
 
 		collectgarbage()

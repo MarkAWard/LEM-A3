@@ -1,4 +1,3 @@
-
 	
 if opt.model=='elad' then
 	
@@ -17,6 +16,7 @@ if opt.model=='elad' then
 	
     criterion = nn.ClassNLLCriterion()
 	
+
 end
 
 
