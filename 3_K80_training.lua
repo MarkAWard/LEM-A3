@@ -12,8 +12,15 @@ if opt.type == 'cuda' then
 end
 
 
+all_tr_data={}
+
+all_tr_data.x=torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length, opt.inputDim)
+all_tr_data.y=torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
+
+
 print("loading data")
-all_tr_data=torch.load(opt.bufferPath)
+all_tr_data.x=torch.load(opt.bufferPath_x)
+all_tr_data.y=torch.load(opt.bufferPath_y)
 print(all_tr_data)
 
 
