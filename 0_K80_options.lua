@@ -23,11 +23,14 @@
     
 	opt.dataPath = "data/TR_set.csv"	
 --	opt.bufferPath = "data/full.t7b"
-	opt.bufferPath = "data/full_100x200.t7b"
+	opt.bufferPath_x = "data/full_x_100x200.t7b"
+	opt.bufferPath_y = "data/full_y_100x200.t7b"
+	opt.proc_glov = "data/glove.t7b"
+	opt.sanity = 'data/sanify.csv'
 	--opt.bufferPath = "data/medium.t7b"
 	
 	--full
-    opt.nTrainDocs = 130000	
+    opt.nTrainDocs = 104000	
 	opt.nTestDocs = 0
     --opt.nTestDocs = 0
     opt.nClasses = 5
