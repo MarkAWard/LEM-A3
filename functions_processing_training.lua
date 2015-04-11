@@ -337,6 +337,20 @@ function test_model(model, data, labels, opt)
     return no_wrong/n
 end
 
+
+--[[
+-- Model: The model to be processed. Assumes that the model has a LookupTable layer as its first layer.
+-- Dict: The dictionary which contains the word embeddings and their respective indexes.
+-- EmbeddingSize: The size of a word's embedding.
+--]]
+function init_model(model, dict, opt)
+	if opt.model == 'lookup_elad' then
+		for key,val in pairs(dict) do                                                               
+			model:get(1):getParameters()[ {{ (val[2]-1) * opt.inputDim + 1, val[2] * opt.inputDim }} ] = val[1]
+		end
+	end
+end
+
 --[[
 function backup_test_model(model, data, labels, opt)
 
