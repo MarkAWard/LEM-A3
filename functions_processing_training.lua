@@ -15,6 +15,7 @@ function load_glove(path, inputDim)
     local line = glove_file:read("*l") 
     --EZ: what is read? 
     --MW: read one line (until newline character)
+    local counter = 1
     while line do
         -- read the GloVe text file one line at a time, break at EOF
         local i = 1
@@ -24,7 +25,7 @@ function load_glove(path, inputDim)
                 -- word comes first in each line, so grab it and create new table entry
                 word = entry:lower() -- change to lower case
                 if string.len(word) > 0 then
-                    glove_table[word] = torch.zeros(inputDim, 1) -- padded with an extra dimension for convolution
+                    glove_table[word] = {torch.zeros(inputDim, 1), counter} -- padded with an extra dimension for convolution
                     --EZ: but how does glove_table[word] make sense?
                     --MW: you are creating a lookup dictionary, word --> word_vector_embedding
                 else
@@ -35,7 +36,7 @@ function load_glove(path, inputDim)
 
             else
                 -- read off and store each word vector element
-                glove_table[word][i-1] = tonumber(entry) 
+                glove_table[word][1][i-1] = tonumber(entry) 
                 --EZ: where is the word and where is the vector??
                 --MW: the word is read first when i==1 and does not change till you go to the next line
                 --    which is outside of the for loop and i gets reset to 1. the vector is read one element
@@ -44,9 +45,10 @@ function load_glove(path, inputDim)
             i = i+1
         end
         line = glove_file:read("*l")
+        counter = counter + 1
     end
     
-    return glove_table
+    return glove_table, counter-1
 end
 
 --- Here we simply encode each document as a fixed-length vector 
@@ -91,7 +93,7 @@ function preprocess_data(raw_data, wordvector_table, opt)
                 if wordvector_table[word:gsub("%p+", "")] then
                     if (doc_size<opt.max_length) then 
                         --print(#document)
-                        local embedding=wordvector_table[word:gsub("%p+", "")]
+                        local embedding=wordvector_table[word:gsub("%p+", "")][1]
                         data[k][{{doc_size,{}}}]:add(embedding)
                         doc_size = doc_size+1
                     end
@@ -127,12 +129,11 @@ function load_train_csv( filename, wordvector_table, opt)
 				break
 			end
             if wordvector_table[word] then
-				--print(doc_size)
-                data[k][{{ doc_size, {} }}]:add( wordvector_table[word] )
+                data[k][{{ doc_size, {} }}]:add( wordvector_table[word][1] )
                 doc_size = doc_size + 1
             else 
                 if wordvector_table[word:gsub("%p+", "")] then
-                    data[k][{{ doc_size, {} }}]:add( wordvector_table[ word:gsub("%p+", "") ] )
+                    data[k][{{ doc_size, {} }}]:add( wordvector_table[ word:gsub("%p+", "") ][1] )
                     doc_size = doc_size + 1
             -- else
             --     pass

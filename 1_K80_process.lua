@@ -6,7 +6,7 @@ print(opt)
 
 
     print("Loading word vectors...")
-    glove_table = load_glove(opt.glovePath, opt.inputDim)
+    glove_table, dictionay_size = load_glove(opt.glovePath, opt.inputDim)
     
 
 	print("Allocating Memory...")
