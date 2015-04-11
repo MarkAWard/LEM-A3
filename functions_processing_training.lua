@@ -22,7 +22,7 @@ function load_glove(path, inputDim)
         for entry in line:gmatch("%S+") do -- split the line at each space
             if i == 1 then
                 -- word comes first in each line, so grab it and create new table entry
-                word = entry:gsub("%p+", ""):lower() -- remove all punctuation and change to lower case
+                word = entry:lower() -- change to lower case
                 if string.len(word) > 0 then
                     glove_table[word] = torch.zeros(inputDim, 1) -- padded with an extra dimension for convolution
                     --EZ: but how does glove_table[word] make sense?
