@@ -113,7 +113,6 @@ function load_train_csv( filename, wordvector_table, opt)
     k = 1
     f = io.open(filename, 'r')
     for line in f:lines() do
-
         -- The input from the csv will be like 1,"document", so we simply extract the document with the following commands.
         labels[k] = line:sub(1,1)
         local review = review:gsub("^..."," "):gsub(".$"," ") -- removes label, comma, and leading/trailing quotes
@@ -125,11 +124,13 @@ function load_train_csv( filename, wordvector_table, opt)
             if wordvector_table[word] then
                 data[k][{{ doc_size, {} }}]:add( wordvector_table[word] )
                 doc_size = doc_size + 1
-            else if wordvector_table[word:gsub("%p+", "")] then
-                data[k][{{ doc_size, {} }}]:add( wordvector_table[ word:gsub("%p+", "") ] )
-                doc_size = doc_size + 1
-            else
-                -- pass
+            else 
+                if wordvector_table[word:gsub("%p+", "")] then
+                    data[k][{{ doc_size, {} }}]:add( wordvector_table[ word:gsub("%p+", "") ] )
+                    doc_size = doc_size + 1
+            -- else
+            --     pass
+                end
             end
         end
 
@@ -139,12 +140,11 @@ function load_train_csv( filename, wordvector_table, opt)
         while doc_size < opt.max_length do
             data[k][{{ doc_size, {} }}]:add( data[k][{{ doc_size % len + 1, {} }}] )
         end
-
+        k = k + 1
     end
     f:close()
 
     return data, labels
-
 end
 
 
