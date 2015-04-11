@@ -14,8 +14,8 @@ end
 
 all_tr_data={}
 
-all_tr_data.x=torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length, opt.inputDim)
-all_tr_data.y=torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
+--all_tr_data.x=torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length, opt.inputDim)
+--all_tr_data.y=torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
 
 
 print("loading data")
