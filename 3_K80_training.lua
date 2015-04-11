@@ -30,7 +30,7 @@ for i=1, shuffle:size(1) do
 	all_tr_data.y[i]=all_tr_data.y[shuffle[i]]
 end
 
-temp=.8*(all_tr_data.x:size(1))
+temp=.9*(all_tr_data.x:size(1))
 VL.x=all_tr_data.x[{{temp+1,(all_tr_data.x:size(1))},{},{}}]
 VL.y=all_tr_data.y[{{temp+1,(all_tr_data.x:size(1))}}]
 

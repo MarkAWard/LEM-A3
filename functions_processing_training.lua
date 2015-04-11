@@ -117,7 +117,7 @@ function load_train_csv( filename, wordvector_table, opt)
     for line in f:lines() do
         -- The input from the csv will be like 1,"document", so we simply extract the document with the following commands.
         labels[k] = line:sub(1,1)
-        local review = review:gsub("^..."," "):gsub(".$"," ") -- removes label, comma, and leading/trailing quotes
+        local review = line:gsub("^..."," "):gsub(".$"," ") -- removes label, comma, and leading/trailing quotes
         -- use the preprocessing defined below
         review = preprocess_text(review)
 

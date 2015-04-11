@@ -1,3 +1,4 @@
+
 	
 if opt.model=='elad' then
 	
@@ -5,8 +6,8 @@ if opt.model=='elad' then
 	model:add(nn.TemporalConvolution(200, 300, 4, 1))
 	model:add(nn.Tanh())
 	model:add(nn.TemporalMaxPooling(3, 1))
-	
-	model:add(nn.TemporalConvolution(300, 300, 6, 2))
+
+	model:add(nn.TemporalConvolution(300, 300, 5, 2))
 	model:add(nn.Tanh())
 	model:add(nn.TemporalMaxPooling(3, 1))
 
