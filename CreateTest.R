@@ -12,7 +12,7 @@ db=db[shuffle,]
 
 x=((dim(db)[1])*.8)
 train=db[1:x,]
-other=db[x:nrow(db),]
+other=db[(x+1):nrow(db),]
 
 
 x=((dim(other)[1]) %/% 2)
