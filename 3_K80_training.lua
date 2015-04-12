@@ -15,7 +15,7 @@ if opt.type == 'cuda' then
 end 
 
 
-if opt.model == 'lookup_elad' then
+if opt.model:match('lookup') == 'lookup' then
 	glove_table, dictionay_size = load_glove(opt.glovePath, opt.inputDim)
 end
 

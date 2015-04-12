@@ -359,16 +359,12 @@ end
 -- EmbeddingSize: The size of a word's embedding.
 --]]
 function init_model(model, dict, opt)
-	if opt.model == 'lookup_elad' then
+	if opt.model:match('lookup') == 'lookup' then
 		counter = 1
-        params, _ = model:get(1):getParameters()
+		params, _ = model:get(1):getParameters()
 		for key,val in pairs(dict) do                                                               
 			print(counter .. ": " .. key .. "   " .. val[2])
 			params[ {{ (val[2]-1) * opt.inputDim + 1, val[2] * opt.inputDim }} ] = val[1]
-			if counter % 15 == 0 then
-				collectgarbage()
-			end		
-			counter = counter + 1
 		end
 	end
 end
