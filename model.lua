@@ -33,6 +33,18 @@ function M:select_model(opt, dict_size)
 		model:add(nn.Linear(100, 5))
 		model:add(nn.LogSoftMax())
 
+	if opt.model == 'lookup_mark' then 
+
+		model = nn.Sequential()
+		model:add(nn.LookupTable(dict_size, 200))
+		model:add(nn.TemporalConvolution(200, 400, 10, 1))
+		model:add(nn.ReLU())
+		model:add(nn.TemporalMaxPooling(5,1))
+		model:add(nn.Dropout(.5))
+		model:add(nn.Reshape(400*87, true))
+		model:add(nn.Linear(400*87, 100))
+		model:add(nn.Linear(100, 5))
+		model:add(nn.LogSoftMax())
 
 	elseif opt.model=='bigboy' then
 		
