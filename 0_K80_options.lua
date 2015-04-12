@@ -2,8 +2,8 @@
     opt = {}
 	
 	-- model flag
-	opt.model = 'lookup_elad'
-	opt.runName = 'simple'	
+	opt.model = 'elad'
+	opt.runName = 'moresimple'	
 	opt.type = 'cuda'
 
 	opt.numcores=10
@@ -21,17 +21,17 @@
 	opt.TrainingFolder = "training/" 
 
     
---	opt.dataPath = "data/TR_set.csv"	
-	opt.dataPath = "data/test.csv"	
+	opt.dataPath = "data/TR_set.csv"	
+--	opt.dataPath = "data/test.csv"	
 
-	opt.bufferPath_x = "data/test_x_100x200.t7b"
-	opt.bufferPath_y = "data/test_y_100x200.t7b"
-
-
+--	opt.bufferPath_x = "data/test_x_100x200.t7b"
+--	opt.bufferPath_y = "data/test_y_100x200.t7b"
 
 
---	opt.bufferPath_x = "data/full_x_100x200.t7b"
---	opt.bufferPath_y = "data/full_y_100x200.t7b"
+
+
+	opt.bufferPath_x = "data/full_x_100x200.t7b"
+	opt.bufferPath_y = "data/full_y_100x200.t7b"
 	opt.proc_glov = "data/glove.t7b"
 	opt.sanity = 'data/sanify.csv'
 	--opt.bufferPath = "data/medium.t7b"

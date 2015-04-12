@@ -309,6 +309,8 @@ end
 
 function test_model(model, data, labels, opt)
 
+
+	model:evaluate()
 	local n = (data:size())[1]
 	local no_wrong = 0
 	
