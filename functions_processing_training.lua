@@ -352,7 +352,7 @@ function init_model(model, dict, opt)
 end
 
 
-function reviewToIndices(inputFile, glo)
+function reviewToIndices(inputFile, glove, opt)
     local data   = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length)
     local labels = torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
 	
