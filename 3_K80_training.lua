@@ -20,38 +20,17 @@ model, criterion = M:select_model(opt, dictionay_size)
 init_model(model, glove_table, opt)
 
 
-all_tr_data={}
-
---all_tr_data.x=torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length, opt.inputDim)
---all_tr_data.y=torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
-
-
-print("loading data")
-all_tr_data.x=torch.load(opt.bufferPath_x)
-all_tr_data.y=torch.load(opt.bufferPath_y)
-print(all_tr_data)
-
-
-print('==> creating validation')
-
 TR={}
+print("loading data")
+TR.x=torch.load(opt.bufferPath_x)
+TR.y=torch.load(opt.bufferPath_y)
+print(TR)
+
 VL={}
-
-
-shuffle = torch.randperm((#all_tr_data.x)[1]):long()
-
-for i=1, shuffle:size(1) do
-	all_tr_data.x[{i,{},{}}]=all_tr_data.x[{shuffle[i],{},{}}]
-	all_tr_data.y[i]=all_tr_data.y[shuffle[i]]
-end
-
-temp=.9*(all_tr_data.x:size(1))
-VL.x=all_tr_data.x[{{temp+1,(all_tr_data.x:size(1))},{},{}}]
-VL.y=all_tr_data.y[{{temp+1,(all_tr_data.x:size(1))}}]
-
-
-TR.x=all_tr_data.x[{{1,temp},{},{}}]
-TR.y=all_tr_data.y[{{1,temp}}]
+print('==> creating validation')
+VL.x=torch.load(opt.val_x)
+VL.y=torch.load(opt.val_y)
+print(VL)
 
 
 print('==> calling train_model')

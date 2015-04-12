@@ -1,7 +1,5 @@
 rm(list=ls())
-
 library(foreign)
-
 setwd("~/Dropbox/DeepLearning/A3")
 
 
@@ -26,7 +24,6 @@ test=other[(x+1):nrow(other),]
 write.table(train,file="data/TR_set.csv",row.names = F,sep=",",col.names = F)
 write.table(validation,file="data/validation.csv",row.names = FALSE,sep=",",col.names = FALSE)
 write.table(test,file="data/test.csv",row.names = FALSE,sep=",",col.names = FALSE)
-
 
 
 # func <- function(x) length(unlist(strsplit(as.character(x)," ")))
