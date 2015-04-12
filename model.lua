@@ -33,7 +33,7 @@ function M:select_model(opt, dict_size)
 		model:add(nn.Linear(100, 5))
 		model:add(nn.LogSoftMax())
 
-	if opt.model == 'lookup_mark' then 
+	elseif opt.model == 'lookup_mark' then 
 
 		model = nn.Sequential()
 		model:add(nn.LookupTable(dict_size, 200))
