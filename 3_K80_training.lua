@@ -4,12 +4,16 @@ require 'optim'
 
 print(opt)
 
-
 if opt.type == 'cuda' then
-	require 'cunn';
-	cutorch.setDevice(opt.gpudevice)
+	require 'cunn'
+	if opt.machine == 'k80' then
+		cutorch.setDevice(opt.device)
+	else
+		cutorch.setDevice(1)
+	end
 	cutorch.getDeviceProperties(cutorch.getDevice())
-end
+end 
+
 
 if opt.model == 'lookup_elad' then
 	glove_table, dictionay_size = load_glove(opt.glovePath, opt.inputDim)
