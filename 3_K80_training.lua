@@ -1,5 +1,4 @@
 require 'functions_processing_training'
-require '0_K80_options'
 M = require 'model'
 require 'optim'
 
