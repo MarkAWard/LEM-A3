@@ -1,7 +1,7 @@
 require 'torch'
 require 'nn'
 require 'optim'
-
+local stringx = require('pl.stringx')
 ffi = require('ffi')
 stopWords = require('stopwords.lua')
 
@@ -352,13 +352,11 @@ function init_model(model, dict, opt)
 end
 
 
-function reviewToIndices(inputFile, glove, opt)
-
+function reviewToIndices(inputFile, glo)
     local data   = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length)
     local labels = torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
-	local stringx = require('pl.stringx')
+	
 	local fd = io.open(inputFile)	
-	local output = torch.zeros(  * maxSentencesFromEachDocument,  maxSeqLength + 1 ):add(6)
 
 	k=1
 	for review in fd:lines() do
@@ -366,7 +364,8 @@ function reviewToIndices(inputFile, glove, opt)
 		review = review:gsub("^..","") -- removes label, comma
 		words = stringx.split(review)
 		doc_size = 1
-		for word in words:
+		
+		for word in words do
 			if doc_size > opt.maxLength then break end
 			-- drop if not in glove 
 			if glove[word] then 
@@ -376,8 +375,6 @@ function reviewToIndices(inputFile, glove, opt)
                 if glove[word:gsub("%p+", "")] then
                     data[k][doc_size] = glove[ word:gsub("%p+", "") ][2] 
                     doc_size = doc_size + 1
-          	 -- else
-             --     pass
                 end
             end
         end
