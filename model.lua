@@ -24,16 +24,14 @@ function M:select_model(opt, dict_size)
 	elseif opt.model=='elad' then
 		
 	    model = nn.Sequential()
-		model:add(nn.TemporalConvolution(200, 300, 4, 1))
-		model:add(nn.Tanh())
-		model:add(nn.TemporalMaxPooling(3, 1))
+		model:add(nn.TemporalConvolution(200, 400, 10, 1))
+		model:add(nn.ReLU())
+		model:add(nn.TemporalSubSampling(400,5,1))
+		model:add(nn.Dropout(.5))
 
-		model:add(nn.TemporalConvolution(300, 300, 5, 2))
-		model:add(nn.Tanh())
-		model:add(nn.TemporalMaxPooling(3, 1))
-
-	    model:add(nn.Reshape(300*44, true))	
-	    model:add(nn.Linear(300*44, 5))
+	    model:add(nn.Reshape(400*87, true))
+		model:add(nn.Linear(400*87, 100))
+	    model:add(nn.Linear(100, 5))
 		model:add(nn.LogSoftMax())
 
 
