@@ -362,8 +362,7 @@ function init_model(model, dict, opt)
 	if opt.model:match('lookup') == 'lookup' then
 		counter = 1
 		params, _ = model:get(1):getParameters()
-		for key,val in pairs(dict) do                                                               
-			print(counter .. ": " .. key .. "   " .. val[2])
+		for key,val in pairs(dict) do
 			params[ {{ (val[2]-1) * opt.inputDim + 1, val[2] * opt.inputDim }} ] = val[1]
 		end
 	end
