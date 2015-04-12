@@ -9,7 +9,7 @@
 module purge
 module load cuda/6.5.12
 
-cd /scratch/ez466/DL/A3
+cd $SCRATCH/DL/A3
 
 th 0_K80_options.lua -mode train -bufferPath_x data/TR_x_100x200.t7b -bufferPath_y data/TR_y_100x200.t7b
 
