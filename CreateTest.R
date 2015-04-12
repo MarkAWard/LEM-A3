@@ -7,17 +7,25 @@ setwd("~/Dropbox/DeepLearning/A3")
 
 db=read.csv("data/train.csv",header = F)
 
+
 shuffle=sample(dim(db)[1],dim(db)[1],replace = F)
 db=db[shuffle,]
 
 
 x=((dim(db)[1])*.8)
 train=db[1:x,]
+other=db[x:nrow(db),]
 
-test=db[x:nrow(db),]
+
+x=((dim(other)[1]) %/% 2)
+
+validation=other[1:x,]
+test=other[(x+1):nrow(other),]
+
 
 write.table(train,file="data/TR_set.csv",row.names = F,sep=",",col.names = F)
-write.table(test,file="data/TS_set.csv",row.names = FALSE,sep=",",col.names = FALSE)
+write.table(validation,file="data/validation.csv",row.names = FALSE,sep=",",col.names = FALSE)
+write.table(test,file="data/test.csv",row.names = FALSE,sep=",",col.names = FALSE)
 
 
 
@@ -45,16 +53,12 @@ for (i in 1:5)
 
 rm(list=ls())
 library(foreign)
-setwd("~/Dropbox/DeepLearning/A3/data/")
-db=read.csv("TS_set.csv",header = F)
 
-x=((dim(db)[1]) %/% 2)
 
-validation=db[1:x,]
-test=db[(x+1):nrow(db),]
 
-write.table(validation,file="validation.csv",row.names = FALSE,sep=",",col.names = FALSE)
-write.table(test,file="test.csv",row.names = FALSE,sep=",",col.names = FALSE)
+
+630000*.8-nrow(db)
+
 
 
 
