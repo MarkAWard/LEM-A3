@@ -109,8 +109,8 @@ end
 
 function load_train_csv( filename, wordvector_table, opt)
     
-    local data = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length, opt.inputDim)
-    local labels = torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
+    local data   = torch.zeros(opt.nTrainDocs, opt.max_length, opt.inputDim)
+    local labels = torch.zeros(opt.nTrainDocs)
 
     k = 1
     f = io.open(filename, 'r')
@@ -353,8 +353,9 @@ end
 
 
 function reviewToIndices(inputFile, glove, opt)
-    local data   = torch.zeros(opt.nClasses*(opt.nTrainDocs+opt.nTestDocs), opt.max_length)
-    local labels = torch.zeros(opt.nClasses*(opt.nTrainDocs + opt.nTestDocs))
+    
+    local data   = torch.zeros(opt.nTrainDocs, opt.max_length)
+    local labels = torch.zeros(opt.nTrainDocs)
 	
 	local fd = io.open(inputFile)	
 
