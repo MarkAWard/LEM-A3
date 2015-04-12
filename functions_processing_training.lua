@@ -361,10 +361,10 @@ end
 function init_model(model, dict, opt)
 	if opt.model == 'lookup_elad' then
 		counter = 1
+        params, _ = model:get(1):getParameters()
 		for key,val in pairs(dict) do                                                               
-			print(key .. "   " .. val[2])
-			model:get(1):getParameters()[ {{ (val[2]-1) * opt.inputDim + 1, val[2] * opt.inputDim }} ] = val[1]
-			print(counter)
+			print(counter .. ": " .. key .. "   " .. val[2])
+			params[ {{ (val[2]-1) * opt.inputDim + 1, val[2] * opt.inputDim }} ] = val[1]
 			if counter % 15 == 0 then
 				collectgarbage()
 			end		
