@@ -9,6 +9,7 @@ cmd:option('-model',  'elad', "name of the model network")
 cmd:option('-runName',  'simple'	, "give the job a name")
 cmd:option('-type',  'cuda', "type: doubl | float | cuda ")
 
+cmd:option('-machine', 'hpc', "hpc | k80")
 cmd:option('-numcores',10, "how many cores?")
 cmd:option('-gpudevice',3, "which gpu device do you want?")
 cmd:option('-seed',123, "random see")
