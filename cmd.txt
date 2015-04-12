@@ -4,4 +4,4 @@ th 0_K80_options.lua -mode process -dataPath data/test.csv -bufferPath_x data/te
 
 th 0_K80_options.lua -mode process -dataPath data/validation.csv -bufferPath_x data/val_x_100x200.t7b -bufferPath_y data/val_y_100x200.t7b -nTrainDocs 65000
 
-th 0_K80_options.lua -mode train
+th 0_K80_options.lua -mode train -bufferPath_x data/TR_x_100x200.t7b -bufferPath_y data/TR_y_100x200.t7b
