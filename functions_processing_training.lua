@@ -367,7 +367,7 @@ function reviewToIndices(inputFile, glove, opt)
 		doc_size = 1
 		
 		for _, word in pairs(words) do
-			if doc_size > opt.maxLength then break end
+			if doc_size > opt.max_length then break end
 			-- drop if not in glove 
 			if glove[word] then 
 				data[k][doc_size] = glove[word][2]
