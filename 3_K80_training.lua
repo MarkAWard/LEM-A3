@@ -44,16 +44,6 @@ if opt.type == 'cuda' then
 	criterion=criterion:cuda()
 end	
 
---print('==> loading previous model')
---model=torch.load('training/model_smallerboy_200_run_trying_fold_1_epoch_4.net' )
-
 train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
-
-
-
-
-	--test_model(model, VL.x, VL.y, opt)
---]]
-
 
 
