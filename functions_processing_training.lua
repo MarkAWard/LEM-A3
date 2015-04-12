@@ -365,7 +365,7 @@ function reviewToIndices(inputFile, glo)
 		words = stringx.split(review)
 		doc_size = 1
 		
-		for word in words do
+		for _, word in pairs(words) do
 			if doc_size > opt.maxLength then break end
 			-- drop if not in glove 
 			if glove[word] then 
