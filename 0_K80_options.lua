@@ -29,6 +29,13 @@ cmd:option('-dataPath',  "data/TR_set.csv"	, "training data path")
 --	cmd:option('-bufferPath',  "data/full.t7b", "")
 cmd:option('-bufferPath_x',  "data/full_x_100x200.t7b", "path to torch binary training data")
 cmd:option('-bufferPath_y',  "data/full_y_100x200.t7b", "path to torch binary training data labels")
+
+
+cmd:option('-val_x',  "data/val_x_100x200.t7b", "path to torch binary training data")
+cmd:option('-val_y',  "data/val_y_100x200.t7b", "path to torch binary training data labels")
+
+
+
 cmd:option('-proc_glov',  "data/glove.t7b", "path to torch glove binary table")
 cmd:option('-sanity',  'data/sanify.csv', "")
 --cmd:option('-bufferPath',  "data/medium.t7b", "")
