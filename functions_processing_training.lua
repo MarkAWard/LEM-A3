@@ -7,7 +7,7 @@ stopWords = require('stopwords.lua')
 
 --- Parses and loads the GloVe word vectors into a hash table:
 -- glove_table['word'] = vector
-function load_glove(path, inputDim)
+function load_glove(path, inputDim, limited)
 
     local glove_file = io.open(path)
     local glove_table = {}
@@ -25,7 +25,21 @@ function load_glove(path, inputDim)
                 -- word comes first in each line, so grab it and create new table entry
                 word = entry:lower() -- change to lower case
                 if string.len(word) > 0 then
-                    glove_table[word] = {torch.zeros(inputDim, 1), counter} -- padded with an extra dimension for convolution
+
+                    -- cut down the size of glove that needs to be loaded/saved
+                    -- only keep words that we would actually find after text preprocessing
+                    if limited then 
+                        -- process the text, strip whitesapce, and check if its the same word
+                        if preprocess_text(word):match("%S+") == word then
+                            glove_table[word] = {torch.zeros(inputDim, 1), counter} -- padded with an extra dimension for convolution
+                            counter = counter + 1
+                        else -- the word was different so we would never find it in the processed text, skip it
+                            break
+                        end
+                    else -- ORIGINAL load everything
+                        glove_table[word] = {torch.zeros(inputDim, 1), counter} -- padded with an extra dimension for convolution
+                        counter = counter + 1
+                    end
                     --EZ: but how does glove_table[word] make sense?
                     --MW: you are creating a lookup dictionary, word --> word_vector_embedding
                 else
@@ -45,7 +59,6 @@ function load_glove(path, inputDim)
             i = i+1
         end
         line = glove_file:read("*l")
-        counter = counter + 1
     end
     
     return glove_table, counter-1
