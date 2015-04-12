@@ -369,11 +369,21 @@ function init_model(model, dict, opt)
 end
 
 
-function reviewToIndices(inputFile, glove, opt)
+function reviewToIndices(inputFile, glove, opt, dataset)
     
-    local data   = torch.zeros(opt.nTrainDocs, opt.max_length)
-    local labels = torch.zeros(opt.nTrainDocs)
-	
+    local data
+    local labels
+    if dataset == "train" then
+        data   = torch.zeros(opt.nTrainDocs, opt.max_length)
+        labels = torch.zeros(opt.nTrainDocs)
+    elseif dataset == "val" then
+        data   = torch.zeros(opt.nValDocs, opt.max_length)
+        labels = torch.zeros(opt.nValDocs)
+    elseif dataset == "test" then
+        data   = torch.zeros(opt.nTestDocs, opt.max_length)
+        labels = torch.zeros(opt.nTestaDocs)
+    end
+
 	local fd = io.open(inputFile)	
 
 	k=1

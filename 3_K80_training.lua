@@ -26,14 +26,22 @@ init_model(model, glove_table, opt)
 
 TR={}
 print("loading data")
-TR.x=torch.load(opt.bufferPath_x)
-TR.y=torch.load(opt.bufferPath_y)
+if opt.model:match('lookup') == 'lookup' then
+	TR.x, TR.y = reviewToIndices(opt.dataPath, glove_table, opt, 'train')
+else
+	TR.x=torch.load(opt.bufferPath_x)
+	TR.y=torch.load(opt.bufferPath_y)
+end
 print(TR)
 
 VL={}
 print('==> creating validation')
-VL.x=torch.load(opt.val_x)
-VL.y=torch.load(opt.val_y)
+if opt.model:match('lookup') == 'lookup' then
+	TR.x, TR.y = reviewToIndices(opt.valPath, glove_table, opt, 'val')
+else
+	VL.x=torch.load(opt.val_x)
+	VL.y=torch.load(opt.val_y)
+end
 print(VL)
 
 
