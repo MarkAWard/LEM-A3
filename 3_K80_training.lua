@@ -7,7 +7,7 @@ print(opt)
 if opt.type == 'cuda' then
 	require 'cunn'
 	if opt.machine == 'k80' then
-		cutorch.setDevice(opt.device)
+		cutorch.setDevice(opt.gpudevice)
 	else
 		cutorch.setDevice(1)
 	end
@@ -45,5 +45,4 @@ if opt.type == 'cuda' then
 end	
 
 train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
-
 
