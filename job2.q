@@ -2,7 +2,7 @@
 #PBS -l nodes=1:ppn=1:gpus=1:titan
 #PBS -l walltime=12:00:00
 #PBS -l mem=100GB
-#PBS -N baseline
+#PBS -N sgd
 #PBS -M maw627@nyu.edu
 
 
