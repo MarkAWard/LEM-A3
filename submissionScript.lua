@@ -4,7 +4,7 @@ require 'functions_processing_training'
 cmd = torch.CmdLine()
 cmd:text()
 cmd:text('Options:')
-cmd:option('-model', "model_mark_run_shitbags_epoch_3.net")
+cmd:option('-model', "model.net")
 cmd:option('-dict', "glove.t7b")
 cmd:text()
 opt = cmd:parse(arg or {})

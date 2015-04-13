@@ -10,5 +10,5 @@ module purge
 module load cuda/6.5.12
 module load torch-deps/7
 
-cd $HOME
-th submissionScript.lua -model model_elad_run_simple_epoch_9.net
+cd $HOME/LEM
+th submissionScript.lua
