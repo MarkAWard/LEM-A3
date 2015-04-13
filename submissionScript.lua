@@ -5,7 +5,9 @@ local wordvector_table = torch.load('glove.t7b')
 require 'cunn'
 local model = torch.load( 'model_elad_run_simple_epoch_4.net' ):float()
 model:evaluate()
-while true do
+
+local numOfReviews = io.read()
+for i = 1, numOfReviews do
     local review = io.read()
     if not review then break end
     -- opt.max_length is fixed to 100 and word embedding size is fixed to 200.
