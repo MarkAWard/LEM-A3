@@ -45,5 +45,5 @@ for i = 1, numOfReviews do
         end
     end
     local _, argmax = model:forward(data):max(2)
-    print( argmax[1] )
+    io.write(argmax[1][1]..'\n')
 end
