@@ -25,7 +25,9 @@ cmd:option('-testResult',  "results/output.csv", "output csv ")
 cmd:option('-TrainingFolder',  "training/" , "training folder")
 
 
-cmd:option('-dataPath',  "data/TR_set.csv"	, "training data path")
+cmd:option('-dataPath',  "data/processed_train.csv"	, "training data path")
+cmd:option('-valPath',  "data/processed_validation.csv"	, "training data path")
+
 --	cmd:option('-bufferPath',  "data/full.t7b", "")
 cmd:option('-bufferPath_x',  "data/full_x_100x200.t7b", "path to torch binary training data")
 cmd:option('-bufferPath_y',  "data/full_y_100x200.t7b", "path to torch binary training data labels")
@@ -35,13 +37,14 @@ cmd:option('-val_x',  "data/val_x_100x200.t7b", "path to torch binary training d
 cmd:option('-val_y',  "data/val_y_100x200.t7b", "path to torch binary training data labels")
 
 
-
 cmd:option('-proc_glov',  "data/glove.t7b", "path to torch glove binary table")
 cmd:option('-sanity',  'data/sanify.csv', "")
 --cmd:option('-bufferPath',  "data/medium.t7b", "")
 
 --full
 cmd:option('-nTrainDocs',  520000	, "number of reviews")
+cmd:option('-nValDocs',  65000	, "number of validation reviews")
+cmd:option('-nTestDocs',  65000	, "number of test reviews")
 
 -- SGD parameters - play around with these
 cmd:option('-nEpochs',  10, "MAX")

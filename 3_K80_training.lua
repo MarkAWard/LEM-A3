@@ -7,7 +7,7 @@ print(opt)
 if opt.type == 'cuda' then
 	require 'cunn'
 	if opt.machine == 'k80' then
-		cutorch.setDevice(opt.device)
+		cutorch.setDevice(opt.gpudevice)
 	else
 		cutorch.setDevice(1)
 	end
@@ -15,7 +15,7 @@ if opt.type == 'cuda' then
 end 
 
 
-if opt.model == 'lookup_elad' then
+if opt.model:match('lookup') == 'lookup' then
 	glove_table, dictionay_size = load_glove(opt.glovePath, opt.inputDim)
 end
 
@@ -26,14 +26,22 @@ init_model(model, glove_table, opt)
 
 TR={}
 print("loading data")
-TR.x=torch.load(opt.bufferPath_x)
-TR.y=torch.load(opt.bufferPath_y)
+if opt.model:match('lookup') == 'lookup' then
+	TR.x, TR.y = reviewToIndices(opt.dataPath, glove_table, opt, 'train')
+else
+	TR.x=torch.load(opt.bufferPath_x)
+	TR.y=torch.load(opt.bufferPath_y)
+end
 print(TR)
 
 VL={}
 print('==> creating validation')
-VL.x=torch.load(opt.val_x)
-VL.y=torch.load(opt.val_y)
+if opt.model:match('lookup') == 'lookup' then
+	VL.x, VL.y = reviewToIndices(opt.valPath, glove_table, opt, 'val')
+else
+	VL.x=torch.load(opt.val_x)
+	VL.y=torch.load(opt.val_y)
+end
 print(VL)
 
 
@@ -44,16 +52,5 @@ if opt.type == 'cuda' then
 	criterion=criterion:cuda()
 end	
 
---print('==> loading previous model')
---model=torch.load('training/model_smallerboy_200_run_trying_fold_1_epoch_4.net' )
-
 train_model(model, criterion, TR.x, TR.y, VL.x, VL.y, opt)
-
-
-
-
-	--test_model(model, VL.x, VL.y, opt)
---]]
-
-
 

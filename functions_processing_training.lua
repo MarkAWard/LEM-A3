@@ -7,7 +7,7 @@ stopWords = require('stopwords.lua')
 
 --- Parses and loads the GloVe word vectors into a hash table:
 -- glove_table['word'] = vector
-function load_glove(path, inputDim)
+function load_glove(path, inputDim, limited)
 
     local glove_file = io.open(path)
     local glove_table = {}
@@ -25,7 +25,21 @@ function load_glove(path, inputDim)
                 -- word comes first in each line, so grab it and create new table entry
                 word = entry:lower() -- change to lower case
                 if string.len(word) > 0 then
-                    glove_table[word] = {torch.zeros(inputDim, 1), counter} -- padded with an extra dimension for convolution
+
+                    -- cut down the size of glove that needs to be loaded/saved
+                    -- only keep words that we would actually find after text preprocessing
+                    if limited then 
+                        -- process the text, strip whitesapce, and check if its the same word
+                        if preprocess_text(word):match("%S+") == word then
+                            glove_table[word] = {torch.zeros(inputDim, 1), counter} -- padded with an extra dimension for convolution
+                            counter = counter + 1
+                        else -- the word was different so we would never find it in the processed text, skip it
+                            break
+                        end
+                    else -- ORIGINAL load everything
+                        glove_table[word] = {torch.zeros(inputDim, 1), counter} -- padded with an extra dimension for convolution
+                        counter = counter + 1
+                    end
                     --EZ: but how does glove_table[word] make sense?
                     --MW: you are creating a lookup dictionary, word --> word_vector_embedding
                 else
@@ -45,7 +59,6 @@ function load_glove(path, inputDim)
             i = i+1
         end
         line = glove_file:read("*l")
-        counter = counter + 1
     end
     
     return glove_table, counter-1
@@ -229,7 +242,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 		
 		if opt.type == 'cuda' then
 			
-			local temp_minibatch = data:sub(opt.idx, opt.idx + opt.minibatchSize, 1, data:size(2)):clone()
+			local temp_minibatch = data:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
 			local temp_minibatch_labels = labels:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
 			
 			
@@ -265,12 +278,12 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         num_wrong = 0    
 	
 		-- Shuffling the training data   
-		shuffle = torch.randperm((#data)[1]):long()
+		-- shuffle = torch.randperm((#data)[1]):long()
 
-		for i=1, shuffle:size(1) do
-			data[{i,{},{}}]=data[{shuffle[i],{},{}}]
-			labels[i]=labels[shuffle[i]]
-		end
+		-- for i=1, shuffle:size(1) do
+		-- 	data[{i}]=data[{shuffle[i]}]
+		-- 	labels[i]=labels[shuffle[i]]
+		-- end
 
 		--data=data:index(1,shuffle)
 		--labels=labels:index(1,shuffle)
@@ -297,14 +310,16 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         local accuracy_vl = test_model(model, test_data, test_labels, opt)
         print("epoch ", epoch, " val error: ", accuracy_vl)
 
-
 		metric_holder[epoch][1]=accuracy_tr
 		metric_holder[epoch][2]=accuracy_vl
 
+
+		local filename = paths.concat(opt.TrainingFolder,'ModelMetrics_' .. opt.model .. '_run_' .. opt.runName .. '.t7b')
+		torch.save(filename,metric_holder)
+
 		collectgarbage()
     end
-	local filename = paths.concat(opt.TrainingFolder,'ModelMetrics_' .. opt.model .. '_run_' .. opt.runName .. '.t7b')
-	torch.save(filename,metric_holder)
+	
 end
 
 function test_model(model, data, labels, opt)
@@ -346,19 +361,31 @@ end
 -- EmbeddingSize: The size of a word's embedding.
 --]]
 function init_model(model, dict, opt)
-	if opt.model == 'lookup_elad' then
-		for key,val in pairs(dict) do                                                               
-			model:get(1):getParameters()[ {{ (val[2]-1) * opt.inputDim + 1, val[2] * opt.inputDim }} ] = val[1]
+	if opt.model:match('lookup') == 'lookup' then
+		counter = 1
+		params, _ = model:get(1):getParameters()
+		for key,val in pairs(dict) do
+			params[ {{ (val[2]-1) * opt.inputDim + 1, val[2] * opt.inputDim }} ] = val[1]
 		end
 	end
 end
 
 
-function reviewToIndices(inputFile, glove, opt)
+function reviewToIndices(inputFile, glove, opt, dataset)
     
-    local data   = torch.zeros(opt.nTrainDocs, opt.max_length)
-    local labels = torch.zeros(opt.nTrainDocs)
-	
+    local data
+    local labels
+    if dataset == "train" then
+        data   = torch.zeros(opt.nTrainDocs, opt.max_length)
+        labels = torch.zeros(opt.nTrainDocs)
+    elseif dataset == "val" then
+        data   = torch.zeros(opt.nValDocs, opt.max_length)
+        labels = torch.zeros(opt.nValDocs)
+    elseif dataset == "test" then
+        data   = torch.zeros(opt.nTestDocs, opt.max_length)
+        labels = torch.zeros(opt.nTestDocs)
+    end
+
 	local fd = io.open(inputFile)	
 
 	k=1
