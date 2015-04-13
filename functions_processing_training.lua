@@ -278,15 +278,10 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         num_wrong = 0    
 	
 		-- Shuffling the training data   
-		-- shuffle = torch.randperm((#data)[1]):long()
+		shuffle = torch.randperm((#data)[1]):long()
 
-		-- for i=1, shuffle:size(1) do
-		-- 	data[{i}]=data[{shuffle[i]}]
-		-- 	labels[i]=labels[shuffle[i]]
-		-- end
-
-		--data=data:index(1,shuffle)
-		--labels=labels:index(1,shuffle)
+		data   = data:index(1,shuffle)
+		labels = labels:index(1,shuffle)
 
 	
         local order = torch.randperm(opt.nBatches) -- not really good randomization
