@@ -9,7 +9,6 @@ model:evaluate()
 local numOfReviews = io.read()
 for i = 1, numOfReviews do
     local review = io.read()
-    if not review then break end
     -- opt.max_length is fixed to 100 and word embedding size is fixed to 200.
     local data   = torch.zeros( 100, 200)
     model:evaluate()
