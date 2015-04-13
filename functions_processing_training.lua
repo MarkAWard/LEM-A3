@@ -383,7 +383,7 @@ function reviewToIndices(inputFile, glove, opt, dataset)
         labels = torch.zeros(opt.nValDocs)
     elseif dataset == "test" then
         data   = torch.zeros(opt.nTestDocs, opt.max_length)
-        labels = torch.zeros(opt.nTestaDocs)
+        labels = torch.zeros(opt.nTestDocs)
     end
 
 	local fd = io.open(inputFile)	

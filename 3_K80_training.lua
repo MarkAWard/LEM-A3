@@ -37,7 +37,7 @@ print(TR)
 VL={}
 print('==> creating validation')
 if opt.model:match('lookup') == 'lookup' then
-	TR.x, TR.y = reviewToIndices(opt.valPath, glove_table, opt, 'val')
+	VL.x, VL.y = reviewToIndices(opt.valPath, glove_table, opt, 'val')
 else
 	VL.x=torch.load(opt.val_x)
 	VL.y=torch.load(opt.val_y)
