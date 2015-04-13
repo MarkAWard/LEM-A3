@@ -11,9 +11,7 @@ opt = cmd:parse(arg or {})
 
 
 local wordvector_table = torch.load(opt.dict)
--- this has to change so we read a float model
-require 'cunn'
-local model = torch.load(opt.model):double()
+local model = torch.load(opt.model)
 model:evaluate()
 
 local numOfReviews = io.read()
