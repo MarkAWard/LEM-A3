@@ -3,7 +3,7 @@ require 'functions_processing_training'
 local wordvector_table = torch.load('glove.t7b')
 -- this has to change so we read a float model
 require 'cunn'
-local model = torch.load( 'model_elad_run_simple_epoch_4.net' ):float()
+local model = torch.load( 'model_elad_run_simple_epoch_4.net' ):double()
 model:evaluate()
 
 local numOfReviews = io.read()
