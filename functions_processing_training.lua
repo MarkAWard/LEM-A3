@@ -287,6 +287,9 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         local order = torch.randperm(opt.nBatches) -- not really good randomization
         for batch=1,opt.nBatches do
             opt.idx = (order[batch] - 1) * opt.minibatchSize + 1
+            if (opt.idx + opt.minibatchSize) > opt.nTrainDocs then
+                opt.idx = opt.nTrainDocs - opt.minibatchSize
+            end
             optim.sgd(feval, parameters, opt)
 			if batch % 20 ==0 then 
 				print("epoch: ", epoch, " batch: ", batch) 
