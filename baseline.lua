@@ -98,6 +98,9 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         local order = torch.randperm(opt.nBatches) -- not really good randomization
         for batch=1,opt.nBatches do
             opt.idx = (order[batch] - 1) * opt.minibatchSize + 1
+            if (opt.idx + opt.minibatchSize) > opt.nClasses*opt.nTrainDocs then
+                opt.idx = opt.nClasses*opt.nTrainDocs - opt.minibatchSize
+            end
             optim.sgd(feval, parameters, opt)
             print("epoch: ", epoch, " batch: ", batch)
         end
@@ -127,15 +130,15 @@ function main()
     -- Configuration parameters
     opt = {}
     -- change these to the appropriate data locations
-    opt.glovePath = "CHANGE_ME" -- path to raw glove data .txt file
-    opt.dataPath = "CHANGE_ME"
+    opt.glovePath = "glove/glove.6B.50d.txt" -- path to raw glove data .txt file
+    opt.dataPath = "data/train.t7b"
     -- word vector dimensionality
     opt.inputDim = 50 
     -- nTrainDocs is the number of documents per class used in the training set, i.e.
     -- here we take the first nTrainDocs documents from each class as training samples
     -- and use the rest as a validation set.
     opt.nTrainDocs = 10000
-    opt.nTestDocs = 0
+    opt.nTestDocs = 1000
     opt.nClasses = 5
     -- SGD parameters - play around with these
     opt.nEpochs = 5
@@ -155,13 +158,19 @@ function main()
     print("Computing document input representations...")
     local processed_data, labels = preprocess_data(raw_data, glove_table, opt)
     
+    nTrain = opt.nClasses*opt.nTrainDocs
+    nTest = opt.nClasses*opt.nTestDocs
     -- split data into makeshift training and validation sets
-    local training_data = processed_data:sub(1, opt.nClasses*opt.nTrainDocs, 1, processed_data:size(2)):clone()
-    local training_labels = labels:sub(1, opt.nClasses*opt.nTrainDocs):clone()
+    local training_data = processed_data:sub(1, nTrain, 1, processed_data:size(2)):clone()
+    local training_labels = labels:sub(1, nTrain):clone()
     
     -- make your own choices - here I have not created a separate test set
-    local test_data = training_data:clone() 
-    local test_labels = training_labels:clone()
+    local test_data = processed_data:sub(nTrain+1, nTrain+nTest, 1, processed_data:size(2)):clone()
+    local test_labels = labels:sub(nTrain+1, nTrain+nTest):clone()
+
+    processed_data = NIL
+    labels = NIL
+    glove_table = NIL
 
     -- construct model:
     model = nn.Sequential()
