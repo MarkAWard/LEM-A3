@@ -310,6 +310,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
         local accuracy_vl = test_model(model, test_data, test_labels, opt)
         print("epoch ", epoch, " val error: ", accuracy_vl)
 
+		torch.save(filename,metric_holder)
 
 		metric_holder[epoch][1]=accuracy_tr
 		metric_holder[epoch][2]=accuracy_vl
@@ -317,7 +318,6 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 		collectgarbage()
     end
 	local filename = paths.concat(opt.TrainingFolder,'ModelMetrics_' .. opt.model .. '_run_' .. opt.runName .. '.t7b')
-	torch.save(filename,metric_holder)
 end
 
 function test_model(model, data, labels, opt)
