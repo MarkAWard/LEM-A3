@@ -242,7 +242,7 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
 		
 		if opt.type == 'cuda' then
 			
-			local temp_minibatch = data:sub(opt.idx, opt.idx + opt.minibatchSize, 1, data:size(2)):clone()
+			local temp_minibatch = data:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
 			local temp_minibatch_labels = labels:sub(opt.idx, opt.idx + opt.minibatchSize):clone()
 			
 			
