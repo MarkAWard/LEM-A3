@@ -13,7 +13,7 @@ opt = cmd:parse(arg or {})
 local wordvector_table = torch.load(opt.dict)
 -- this has to change so we read a float model
 require 'cunn'
-local model = torch.load( 'model_elad_run_simple_epoch_4.net' ):double()
+local model = torch.load(opt.model):double()
 model:evaluate()
 
 local numOfReviews = io.read()
@@ -45,6 +45,5 @@ for i = 1, numOfReviews do
         end
     end
     local _, argmax = model:forward(data):max(2)
-    print( argmax )
-	--io.write(  )  
+    print( argmax[1] )
 end
