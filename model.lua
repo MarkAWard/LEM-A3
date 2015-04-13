@@ -33,6 +33,18 @@ function M:select_model(opt, dict_size)
 		model:add(nn.Linear(100, 5))
 		model:add(nn.LogSoftMax())
 
+	elseif opt.model=='mark' then
+		
+		model = nn.Sequential()
+		model:add(nn.TemporalConvolution(200, 300, 8, 1))
+		model:add(nn.ReLU())
+		model:add(nn.TemporalMaxPooling(4,1))
+		model:add(nn.Dropout(.5))
+		model:add(nn.Reshape(300*90, true))
+		model:add(nn.Linear(300*90, 200))
+		model:add(nn.Linear(200, 5))
+		model:add(nn.LogSoftMax())
+
 	elseif opt.model == 'lookup_mark' then 
 
 		model = nn.Sequential()
