@@ -102,12 +102,15 @@ function train_model(model, criterion, data, labels, test_data, test_labels, opt
                 opt.idx = opt.nClasses*opt.nTrainDocs - opt.minibatchSize
             end
             optim.sgd(feval, parameters, opt)
+            if batch % 20 ==0 then 
+                collectgarbage()
+            end
             print("epoch: ", epoch, " batch: ", batch)
         end
 
         local accuracy = test_model(model, test_data, test_labels, opt)
         print("epoch ", epoch, " error: ", accuracy)
-
+        collectgarbage()
     end
 end
 
@@ -143,11 +146,13 @@ function main()
     -- SGD parameters - play around with these
     opt.nEpochs = 5
     opt.minibatchSize = 128
-    opt.nBatches = math.floor(opt.nTrainDocs / opt.minibatchSize)
+    opt.nBatches = math.floor((opt.nClasses*opt.nTrainDocs) / opt.minibatchSize)
     opt.learningRate = 0.1
     opt.learningRateDecay = 0.001
     opt.momentum = 0.1
     opt.idx = 1
+
+    torch.setnumthreads(10)
 
     print("Loading word vectors...")
     local glove_table = load_glove(opt.glovePath, opt.inputDim)
